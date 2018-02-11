@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script type="text/javascript" src="libs/three.js"></script> <!-- 60 -->
+    <script type="text/javascript" src="libs/jquery-1.9.0.js"></script>
+    <script type="text/javascript" src="libs/stats.js"></script>
+    <script type="text/javascript" src="libs/dat.gui.js"></script>
+	
+</head>
+<body>
+
+<!-- 
+
+overflow: hidden; for body 
+
+Oimo + Three.js - рабочий пример !!!
+file:///C:/3D/books/Dirksen%20J.%20-%20Learning%20Three.js%20The%20JavaScript%203D%20Library%20for%20WebGL%20(2nd%20Edition)%20-%202015/Oimo.js-gh-pages/Oimo.js-gh-pages/examples/test_collision.html
+
+
+https://github.com/lo-th/Oimo.js/blob/gh-pages/examples/test_collision.html
+
+file:///H:/Unity-3D-book-CD/Babylon.js%20Essentials_Code/Babylon.JS%20Essentials_Code_corr/Chapter5/index.html
+
+http://learningthreejs.com/data/2012-06-05-3d-physics-with-three-js-and-physijs/
+
+http://chandlerprall.github.io/Physijs/examples/collisions.html
+
+-->
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+}
+html,
+body {
+  height: 100%;
+  
+  overflow-x: hidden;
+  overflow-y: hidden;
+  
+  background:  rgb(41,118,41);
+  
+}
+.wrapper {
+  position: relative;
+  min-height: 100%;
+}
+.content {
+  padding-bottom: 1px;
+  background:  rgb(41,118,41); /* 41-118-41  #C7E304;*/ /* Цвет фона */
+  height: calc(100vh - 33.15vw );
+}
+.footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 10.25vw;
+  background: #C7E3E4; /* Цвет фона */
+  /* max-height: 10vh; */
+}
+
+.header {
+  position: relative;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 10.25vw;
+  /*background: #C7E3E4;*/ /* Цвет фона */
+  background: rgb(55,55,55);
+}
+
+   .rightpic {
+   
+    /* max-height: 10vh; */
+   
+    /*left: 0;*/
+    /*bottom: calc( 10.25vw +  (100vw - 4*102/62*10.25vw*1.4)/2   );*/
+	/*position: absolute;*/
+    /*float: right; */  /* Выравнивание по правому краю */
+    /*margin: 0 0 0 0;*/ /* Отступы вокруг фотографии */
+	
+	margin-left: calc(   (100vw -  4*102/62*10.25vw*1.4)/5     );
+	margin-right: 0;
+	margin-bottom: calc(   (100vw -  4*102/62*10.25vw*1.4)/5   + 10.25vw  );
+	
+   }
+
+   
+table {
+        background:green;
+        border-radius: 10px 10px 0 0;
+        border-spacing:2px;
+		width: calc( 100vw - 20.5vw ); /* Ширина таблицы в процентах */
+}
+td {
+        padding:5px;
+        background:#FFCC99;
+        border: solid 1px rgba(41,118,41,0.3);
+		vertical-align:middle;
+		text-align: center;
+}
+td.tleft {
+        border-radius: 5px 5px 0 0;
+        
+}
+td.tcenter {
+        border-radius: 5px;
+		background:rgb(95,88,31);
+		color: white; 
+		text-align: center;
+        
+}
+td.bcenter      {
+        
+    border-radius: 5px;
+	background:rgb(31,88,95);
+	color: white;
+	text-align: center;
+}   
+
+
+#parent1 { 
+     display: table;
+	 text-align: center;
+}
+
+#child1 {
+    display: table-cell;
+    vertical-align: middle;
+	font-family: Arial; 
+	font-size: calc( 5vw ); 
+	color: grey;
+	overflow: hidden;
+	white-space: nowrap;
+	/*font-weight: bold;*/
+	background:rgb(55,55,55);
+	text-overflow: ellipsis;
+}
+   
+.truncate {
+  width: 40.25vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}   
+   
+</style>
+
+
+<div class="wrapper">
+
+  <div class="header">
+     <img src=Left-verh-62-62.png style="float : left; height: 10.25vw;">
+	 <img src=Logo-verh-148-62.png style="float : left;  margin: 0 0 0 1; height: 10.25vw;">
+	 
+	 <!--
+     <img src=Pravo-verh-krest-62-62.png style="float : right; height: 10.25vw;">
+     -->
+	 
+	 <!--
+	 <img src=Seriy-fon-62.png style="float : left; width: calc(100vw - 148/62*(10.25vw) - 10.25vw - 10.25vw - 1px - 1px - 1px); height: 10.25vw; margin: 0 0 0 1;">
+	 -->
+	 <div id="parent1" style="float : left; width: calc(100vw - 148/62*(10.25vw) - 10.25vw - 10.25vw - 1px - 1px - 1px); height: 10.25vw; margin: 0 0 0 1;">
+	   <div id="child1">
+	     <center> 
+	     <div class="truncate">
+	       <span id="username">User Name 111111111111111</span>
+		 </div>
+		 </center>
+		</div>
+	 </div>
+	 
+
+     <img src=Pravo-verh-krest-62-62.png style="float : right; width : calc( 10.25vw - 0*1px - 0*1px - 0*1px    ) ; height: 10.25vw;">
+
+	 
+	<!--
+     header
+	-->
+	 
+  </div>
+
+
+  <div class="content">
+  
+  <!--
+    t1<br>
+    t2<br>
+  --> 
+   <center>
+   <font color=#FFFFFF face="arial">
+   <table id="t">
+        <tr>
+		<!--
+                <td class="tleft">Cell 1-1</td>
+		-->
+                <td class="tcenter"  style="background: rgb(226,29,29);">1</td>
+                <td class="tcenter">2</td>
+				<td class="tcenter">3</td>
+                <td class="tcenter">4</td>
+		        <td class="tcenter">5</td>
+                <td class="tcenter">6</td>
+		        <td class="tcenter">7</td>
+                <td class="tcenter">8</td>
+        <!--		
+                <td>Cell 1-3</td>
+		-->
+        </tr>
+        <tr>
+		<!--
+                <td>Cell 2-1</td>
+		-->		
+                <td class="bcenter"  style="background: rgb(43,43,243);">1</td>
+                <td class="bcenter">2</td>
+                <td class="bcenter">3</td>
+                <td class="bcenter">4</td>
+                <td class="bcenter">5</td>
+                <td class="bcenter">6</td>
+                <td class="bcenter">7</td>
+                <td class="bcenter">8</td>
+        <!--				
+                <td>Cell 2-3</td>
+		-->
+        </tr>
+</table>
+</font>
+</center>
+
+   
+  <!-- 
+   <div><button id="up">button</button></div>
+  -->
+   t3<br>
+   
+   
+   <!------------------------------ 3D Js -------------------------------------------------------------------------->
+   <div id="Stats-output">
+   </div>
+   <!-- Div which will hold the Output -->
+   <center>
+   
+   <!--
+   <div id="WebGL-output" style="position: absolute; bottom: 22.75vw; right: 10.25vw; background: rgb(41,118,41); width: calc(100vw - 10.25vw - 10.25vw); height: calc(  (100vh - 33.15vw) / 2   );  overflow: hidden;" >
+   </div>
+   -->
+   
+   <!--
+   <div id="WebGL-output" style="position: absolute; top: calc(10.25vw + 70px); right: 10.25vw; background: rgb(41,118,41); width: calc(100vw - 10.25vw - 10.25vw); height: calc(  (100vh - 33.15vw) / 2   );  overflow: hidden;" >
+   </div>
+   -->
+   
+   <div id="WebGL-output" style="position: absolute; top: calc(10.25vw + 70px); right: 10.25vw; background: rgb(41,118,41); width: calc(100vw - 10.25vw - 10.25vw); height: calc(  100vh - 34.15vw - 70px   );  overflow: hidden;" >
+   </div>
+   
+   
+   <!-- 100vh - 33.15vw -->
+   
+   </center>
+      
+   t4<br>
+   
+   <!------------------------------------------------------- code --------------------------------------------->
+   
+   <script type="text/javascript">
+   
+   var username=document.getElementById("username");
+   username.innerHTML = "User Name: Mayami-2017";
+   
+   var table=document.getElementById("t");
+   table.rows[0].cells[2].style.backgroundColor = 'grey';
+   table.rows[0].cells[2].innerHTML = "77";
+
+    // once everything is loaded, we run our Three.js stuff.
+    $(function () {
+
+        var stats = initStats();
+
+        // create a scene, that will hold all our elements such as objects, cameras and lights.
+        var scene = new THREE.Scene();
+		
+		//--- razmer output 3d div ---
+		var div = document.getElementById("WebGL-output");
+		//alert(div.offsetHeight); 
+        //alert(div.offsetWidth); 
+
+        // create a camera, which defines where we're looking at.
+      //var camera = new THREE.PerspectiveCamera(15, window.innerWidth / window.innerHeight, 0.1, 1000); // 45 - 0.1 - 1000
+        var camera = new THREE.PerspectiveCamera(15, div.offsetWidth / div.offsetHeight, 0.1, 1000); // 45 - 0.1 - 1000
+
+		
+		
+        // create a render and set the size
+        var renderer = new THREE.WebGLRenderer();
+
+        renderer.setClearColorHex(0xEEEEEE, 1.0);
+        
+	//	renderer.setSize(window.innerWidth/2, window.innerHeight/2);
+		renderer.setSize(div.offsetWidth, div.offsetHeight);
+        
+        renderer.shadowMapEnabled = true;
+
+        // create the ground plane
+        var planeGeometry = new THREE.PlaneGeometry(60,40,1,1);
+        var planeMaterial =    new THREE.MeshLambertMaterial({color: 0x00aa00}); // ffffff
+        var plane = new THREE.Mesh(planeGeometry,planeMaterial);
+        plane.receiveShadow  = true;
+
+        // rotate and position the plane
+        plane.rotation.x=-0.5*Math.PI;
+        plane.position.x=15
+        plane.position.y=0
+        plane.position.z=0
+
+        // add the plane to the scene
+        scene.add(plane);
+
+        // create a cube
+        var cubeGeometry = new THREE.CubeGeometry(4,4,4);
+        var cubeMaterial = new THREE.MeshLambertMaterial({color: 0xff0000});
+		
+		
+		
+		material = new THREE.MeshFaceMaterial([
+	
+	/*
+        new THREE.MeshBasicMaterial({color:0xff0000}),
+		new THREE.MeshBasicMaterial({color:0xff0000}),
+		new THREE.MeshBasicMaterial({color:0xff0000}),
+	    new THREE.MeshBasicMaterial({color:0xff0000}),
+		new THREE.MeshBasicMaterial({color:0x0000ff}),
+		new THREE.MeshBasicMaterial({color:0x00ff00})
+	*/
+	
+	// file:///C:/3D/habrahabr-master/habrahabr-master/WebGL_Three.js/chapter-01/05-control-gui.html
+	// file:///C:/3D/habrahabr-master/habrahabr-master/WebGL_Three.js/chapter-01/img/Dice-Blue-1.png
+  
+    /*
+	    new THREE.MeshBasicMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/Dice-Blue-1.png' ) }),
+	    new THREE.MeshBasicMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/Dice-Blue-2.png' ) }),
+	    new THREE.MeshBasicMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/Dice-Blue-3.png' ) }),
+	    new THREE.MeshBasicMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/Dice-Blue-4.png' ) }),
+	    new THREE.MeshBasicMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/Dice-Blue-5.png' ) }),
+	    new THREE.MeshBasicMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/Dice-Blue-6.png' ) })
+    */
+		
+
+/*		
+	    new THREE.MeshLambertMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/1-red-324.png' ) }),
+	    new THREE.MeshLambertMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/2-red-324.png' ) }),
+	    new THREE.MeshLambertMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/3-red-324.png' ) }),
+	    new THREE.MeshLambertMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/4-red-324.png' ) }),
+*/	
+	
+	    new THREE.MeshLambertMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/6-red-324.png' ) }),
+	    new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/5-red-324.png' ) }),
+	    new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/4-red-324.png' ) }),
+	    new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/3-red-324.png' ) }),
+	    new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/2-red-324.png' ) }),
+	    new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/1-red-324.png' ) })
+	
+
+
+
+		
+        ]);
+		
+		
+        var cube = new THREE.Mesh(cubeGeometry, material);  //cubeMaterial
+		
+		
+        cube.castShadow = true;
+
+        // position the cube
+        cube.position.x=-4;
+        cube.position.y=3;
+        cube.position.z=0;
+
+        // add the cube to the scene
+        scene.add(cube);
+
+		
+		
+		
+		
+		material2 = new THREE.MeshFaceMaterial([
+		/*
+     	    new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/Dice-Blue-1.png' ) }),
+	        new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/Dice-Blue-2.png' ) }),
+	        new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/Dice-Blue-3.png' ) }),
+	        new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/Dice-Blue-4.png' ) }),
+	        new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/Dice-Blue-5.png' ) }),
+	        new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/Dice-Blue-6.png' ) })
+		*/	
+			new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/1-blue-324.png' ) }),
+	        new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/2-blue-324.png' ) }),
+	        new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/3-blue-324.png' ) }),
+	        new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/4-blue-324.png' ) }),
+	        new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/5-blue-324.png' ) }),
+	        new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/6-blue-324.png' ) })
+
+        ]);
+		
+        var cube2 = new THREE.Mesh(cubeGeometry, material2);  //cubeMaterial
+        cube2.castShadow = true;
+        cube2.position.x=-4+4+2;
+        cube2.position.y=3;
+        cube2.position.z=0+4+2;
+        scene.add(cube2);
+
+
+
+		
+		
+        var sphereGeometry = new THREE.SphereGeometry(4,20,20);
+        var sphereMaterial = new THREE.MeshLambertMaterial({color: 0x7777ff});
+        var sphere = new THREE.Mesh(sphereGeometry,sphereMaterial);
+
+        // position the sphere
+        sphere.position.x=20+20;
+        sphere.position.y=0;
+        sphere.position.z=2;
+        sphere.castShadow=true;
+
+        // add the sphere to the scene 
+        scene.add(sphere);
+
+        // position and point the camera to the center of the scene
+        camera.position.x = -30;
+        camera.position.y = 40;
+        camera.position.z = 30;
+        camera.lookAt(scene.position);
+
+        
+        // add spotlight for the shadows
+        var spotLight = new THREE.SpotLight( 0xdddddd ); // ffffff
+        spotLight.position.set( -40, 60, -10 );
+        spotLight.castShadow = true;
+        scene.add( spotLight );
+		
+		
+		var light2 = new THREE.AmbientLight(0x222222);
+	    scene.add(light2);
+
+
+        // add the output of the renderer to the html element
+        $("#WebGL-output").append(renderer.domElement);
+
+        // call the render function
+        var step=0;
+
+        var controls = new function() {
+            this.rotationSpeed = 0.02*2;
+            this.bouncingSpeed = 0.03;
+        }
+
+        
+		//---------------------------------------------- USER INTERFACE To CONTROL 3D PARAMETERS ----------
+		//var gui = new dat.GUI();
+        //gui.add(controls, 'rotationSpeed',0,0.5);
+        //gui.add(controls, 'bouncingSpeed',0,0.5);
+
+        render();
+
+        function render() {
+            stats.update();
+            // rotate the cube around its axes
+            cube.rotation.x += controls.rotationSpeed;
+            cube.rotation.y += 0.1; //controls.rotationSpeed; 0.2
+            cube.rotation.z = 0; //+= controls.rotationSpeed;
+
+            cube2.rotation.x += controls.rotationSpeed;
+            cube2.rotation.y += 0.05; //controls.rotationSpeed; 0.2
+            cube2.rotation.z += controls.rotationSpeed;
+			
+			
+			
+			
+            // bounce the sphere up and down
+            step+=controls.bouncingSpeed;
+			
+            //sphere.position.x = 20+( 10*(Math.cos(step)));
+            //sphere.position.y = 2 +( 10*Math.abs(Math.sin(step)));
+
+            // render using requestAnimationFrame
+            requestAnimationFrame(render);
+            renderer.render(scene, camera);
+        }
+
+        function initStats() {
+
+            var stats = new Stats();
+
+            stats.setMode(0); // 0: fps, 1: ms
+
+            // Align top-left
+            stats.domElement.style.position = 'absolute';
+            stats.domElement.style.left = '0px';
+            stats.domElement.style.top = '0px';
+
+            //$("#Stats-output").append( stats.domElement ); //-------------------------- stats --------------
+
+            return stats;
+        }
+    });
+
+
+
+</script>
+   <!------------------------- end of 3d code --------------->
+   
+   
+   
+   
+   <!--------------------------------------------------- BOTTOM ------------------------------------>
+   <!-- max-height: 50px; max-width: 140px; 3 -->
+	
+    <div style="position: absolute; bottom: 0; overflow: hidden;">
+		<img src=button-Clear-niz-102-62.png  style="width: calc(102/62*10.25vw*1.4); height: 10.25vw;  " class="rightpic" 
+		><img src=button-Auto-niz-102-62.png   style="width: calc(102/62*10.25vw*1.4); height: 10.25vw; " class="rightpic" 
+		><img src=button-REBET-niz-102-62.png  style="width: calc(102/62*10.25vw*1.4); height: 10.25vw; " class="rightpic" 
+		><img src=button-ROLL-102-62.png       style="width: calc(102/62*10.25vw*1.4); height: 10.25vw; " class="rightpic" >
+   	</div>
+    
+   
+  <!-- 
+   <div style="display: flex; ">
+       <img src=button-REBET-niz-102-62.png width=70%  style="align-self: flex-end;">
+   </div>   
+   <div  style="display: table-cell; vertical-align: bottom; border: 1px solid #f00; height: 200px; width: 200px; " >Hello</div>  
+  -->
+  
+   
+
+ </div>
+  
+
+  <div class="footer"> 
+      
+     <img src=Niz-left-square-62-62.png  style="float : left;  width: 10.25vw; ">
+ 
+	<!--
+	 <img src=Niz-left-square-62-62.png  style="position: absolute; left : 0;">
+	--> 
+	 
+	 
+	<!-- grey fon -->
+	 <img src=Seriy-fon-62.png style="float : left; width: calc( (100vw - 140/62*10.25vw - 85/62*10.25vw - 10.25vw) / 2 + 9px); height: 10.25vw;  margin: 0 0 0 1; ">
+	
+	 
+	 <!-- center -->
+	 <img src=Niz-Fire-Play-140-62.png   style="float : left; margin: 0 0 0 1; width: calc( 140/62*10.25vw ); ">
+	 
+	 <!--
+	 <img src=Niz-Fire-Play-140-62.png   style="position: absolute; left : calc(50% - 70px);">
+	 -->
+	 
+	 
+	 <!-- grey fon -->
+	 <img src=Seriy-fon-62.png style="float : left; width: calc( (100vw - 140/62*10.25vw - 85/62*10.25vw - 10.25vw) / 2 - 13px); height: 10.25vw;  margin: 0 0 0 1; ">
+	
+	 
+      
+     <img src=Logo-niz-pravo.png style="position: absolute; right : 0; width: calc(85/62*10.25vw); ">
+	 
+	 <!--
+	 <img src=Pravo-verh-krest-62-62.png style="position: absolute; right : 186; width: 4.85vw;">
+	 -->
+	 <!--
+     futer
+	 -->
+  </div>
+
+</div>
+
+</body>
+</html>

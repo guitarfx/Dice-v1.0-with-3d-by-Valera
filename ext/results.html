@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>Dice Game Preview</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="styles/main.css" media="all">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	</head>
+	<body>
+
+		<div class="game-view">
+
+
+			<div class="top-panel">
+				<div class="panel-left">
+					<div class="menu-button"></div>
+					<div class="portal-logo"></div>
+				</div>
+
+				<div class="panel-right">
+					<div class="username">Dude with very very long name</div>
+					<div class="exit-button"></div>
+				</div>
+			</div>
+
+
+			<div class="game-holder">
+
+
+				<div class="top-info-holder">
+					<div class="bet">
+						<div class="bet-title">Bet</div>
+						<div class="bet-num">1.00</div>
+					</div>
+					<div class="result">
+						<div class="result-title">Result</div>
+						<div class="result-num">-0.20</div>
+					</div>
+					<div class="balance">
+						<div class="balance-title">Balance</div>
+						<div class="balance-num">&euro;990.80</div>
+					</div>
+				</div>
+
+
+
+				<div class="dice-result-wrapper slideDown">
+					<div class="dr-slide-left"></div>
+					<div class="dr-holder">
+						<ul class="dr-first-holder">
+							<li class="dr-first current">5</li>
+							<li class="dr-first">2</li>
+							<li class="dr-first">1</li>
+							<li class="dr-first">2</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+						</ul>
+						<ul class="dr-second-holder">
+							<li class="dr-second current">4</li>
+							<li class="dr-second">6</li>
+							<li class="dr-second">2</li>
+							<li class="dr-second">6</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+						</ul>
+					</div>
+					<div class="dr-slide-right"></div>
+				</div>
+
+
+
+				<div class="fields-wrapper slideDown">
+					<div class="fields-holder">
+						<ul class="fields-first-row">
+							<li class="field-1">
+								<div class="chart-left pullUp" style="height:25%">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:43%">&nbsp;</div>
+							</li>
+							<li class="field-2">
+								<div class="chart-left pullUp" style="height:50%">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:32%">&nbsp;</div>
+							</li>
+							<li class="field-3">
+								<div class="chart-left pullUp" style="height:0px">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:0px">&nbsp;</div>
+							</li>
+							<li class="field-4">
+								<div class="chart-left pullUp" style="height:0px">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:0px">&nbsp;</div>
+							</li>
+							<li class="field-5">
+								<div class="chart-left pullUp" style="height:25%">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:60%">&nbsp;</div>
+							</li>
+							<li class="field-6">
+								<div class="chart-left pullUp" style="height:0px">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:0px">&nbsp;</div>
+							</li>
+						</ul>
+						<ul class="fields-second-row">
+							<li class="field-1">
+								<div class="chart-left pullUp" style="height:0px">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:0px">&nbsp;</div>
+							</li>
+							<li class="field-2">
+								<div class="chart-left pullUp" style="height:25%">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:43%">&nbsp;</div>
+							</li>
+							<li class="field-3">
+								<div class="chart-left pullUp" style="height:0px">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:0px">&nbsp;</div>
+							</li>
+							<li class="field-4">
+								<div class="chart-left pullUp" style="height:25%">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:60%">&nbsp;</div>
+							</li>
+							<li class="field-5">
+								<div class="chart-left pullUp" style="height:0px">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:0px">&nbsp;</div>
+							</li>
+							<li class="field-6">
+								<div class="chart-left pullUp" style="height:50%">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:32%">&nbsp;</div>
+							</li>
+						</ul>
+						<ul class="fields-third-row">
+							<li class="field-1">
+								<div class="chart-left pullUp" style="height:53%">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:53%">&nbsp;</div>
+								<div class="block-title">Low</div>
+							</li>
+							<li class="field-2">
+								<div class="chart-left pullUp" style="height:19%">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:19%">&nbsp;</div>
+								<div class="block-title">Middle</div>
+							</li>
+							<li class="field-3">
+								<div class="chart-left pullUp" style="height:43%">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:43%">&nbsp;</div>
+								<div class="block-title">High</div>
+							</li>
+						</ul>
+						<ul class="fields-fourth-row">
+							<li class="field-1">
+								<div class="chart-left pullUp" style="height:27%">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:27%">&nbsp;</div>
+								<div class="block-title">Odd</div>
+							</li>
+							<li class="field-2">
+								<div class="chart-left pullUp" style="height:45%">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:45%">&nbsp;</div>
+								<div class="block-title">2 &mdash; 6</div>
+							</li>
+							<li class="field-3">
+								<div class="chart-left pullUp" style="height:0px">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:0px">&nbsp;</div>
+								<div class="block-title">7</div>
+							</li>
+							<li class="field-4">
+								<div class="chart-left pullUp" style="height:69%">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:69%">&nbsp;</div>
+								<div class="block-title">8 &mdash; 12</div>
+							</li>
+							<li class="field-5">
+								<div class="chart-left pullUp" style="height:60%">&nbsp;</div>
+								<div class="chart-right pullUp" style="height:60%">&nbsp;</div>
+								<div class="block-title">Even</div>
+							</li>
+						</ul>
+
+					</div>
+				</div>
+
+				<div class="table results">
+
+					<div class="table-column results">
+						<div class="table-head results">
+							Roll
+						</div>
+						<div class="table-row results current">
+							4
+						</div>
+						<div class="table-row">
+							3
+						</div>
+						<div class="table-row">
+							2
+						</div>
+						<div class="table-row">
+							1
+						</div>
+					</div>
+
+					<div class="table-column results">
+						<div class="table-head results">
+							Bet
+						</div>
+						<div class="table-row results current">
+							5.00
+						</div>
+						<div class="table-row">
+							3.00
+						</div>
+						<div class="table-row">
+							2.00
+						</div>
+						<div class="table-row">
+							1.00
+						</div>
+					</div>
+
+					<div class="table-column results">
+						<div class="table-head results">
+							Payout
+						</div>
+						<div class="table-row results current">
+							5.80
+						</div>
+						<div class="table-row">
+							0.80
+						</div>
+						<div class="table-row">
+							5.00
+						</div>
+						<div class="table-row">
+							2.00
+						</div>
+					</div>
+
+					<div class="table-column results">
+						<div class="table-head results">
+							Result
+						</div>
+						<div class="table-row results current">
+							+2.80
+						</div>
+						<div class="table-row">
+							-1.20
+						</div>
+						<div class="table-row">
+							+4.00
+						</div>
+						<div class="table-row">
+							+1.00
+						</div>
+					</div>
+
+					<div class="table-column results">
+						<div class="table-head results">
+							Balance
+						</div>
+						<div class="table-row results current">
+							1005.40
+						</div>
+						<div class="table-row">
+							1002.60
+						</div>
+						<div class="table-row">
+							1003.80
+						</div>
+						<div class="table-row">
+							1002.80
+						</div>
+					</div>
+
+				</div>
+
+
+
+				<div class="button-holder-ingame">
+					<div class="button ingame">Clear</div>
+					<div class="button ingame">Auto</div>
+					<div class="button ingame">Rebet</div>
+					<div class="button ingame">Roll</div>
+				</div>
+
+			</div>
+
+			<div class="bottom-panel">
+				<div class="panel-left">
+					<div class="info-button"></div>
+				</div>
+
+				<div class="panel-center">
+					<div class="fair-play-button">
+						Fair Play
+					</div>
+				</div>
+
+				<div class="panel-right">
+					<div class="game-logo"></div>
+				</div>
+			</div>
+
+		</div>
+
+	</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>Dice Game Preview</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="styles/main.css" media="all">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	</head>
+	<body>
+
+		<div class="game-view">
+
+
+			<div class="top-panel">
+				<div class="panel-left">
+					<div class="menu-button"></div>
+					<div class="portal-logo"></div>
+				</div>
+
+				<div class="panel-right">
+					<div class="username">Dude with very very long name</div>
+					<div class="exit-button"></div>
+				</div>
+			</div>
+
+			<div class="game-holder">
+
+<!--
+				<div class="top-info-holder">
+					<div class="bet">
+						<div class="bet-title">Bet</div>
+						<div class="bet-num">1.00</div>
+					</div>
+					<div class="result">
+						<div class="result-title">Result</div>
+						<div class="result-num">-0.20</div>
+					</div>
+					<div class="balance">
+						<div class="balance-title">Balance</div>
+						<div class="balance-num">&euro;990.80</div>
+					</div>
+				</div>
+-->
+<!--
+				<div class="dice-result-wrapper slideDown">
+					<div class="dr-slide-left"></div>
+					<div class="dr-holder">
+						<ul class="dr-first-holder">
+							<li class="dr-first current">5</li>
+							<li class="dr-first">2</li>
+							<li class="dr-first">1</li>
+							<li class="dr-first">2</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+						</ul>
+						<ul class="dr-second-holder">
+							<li class="dr-second current">4</li>
+							<li class="dr-second">6</li>
+							<li class="dr-second">2</li>
+							<li class="dr-second">6</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+						</ul>
+					</div>
+					<div class="dr-slide-right"></div>
+				</div>
+-->
+
+
+				<div class="fields-wrapper slideUp">
+					<div class="fields-holder">
+						<ul class="fields-first-row">
+							<li class="field-1">1</li>
+							<li class="field-2">2</li>
+							<li class="field-3">3</li>
+							<li class="field-4">4</li>
+							<li class="field-5">5</li>
+							<li class="field-6">6</li>
+						</ul>
+						<ul class="fields-second-row">
+							<li class="field-1">1</li>
+							<li class="field-2">2</li>
+							<li class="field-3">3</li>
+							<li class="field-4">4</li>
+							<li class="field-5">5</li>
+							<li class="field-6">6</li>
+						</ul>
+						<ul class="fields-third-row">
+							<li class="field-1">
+								<div class="block-title">Low</div>
+							</li>
+							<li class="field-2">
+								<div class="block-title">Middle</div>
+							</li>
+							<li class="field-3">
+								<div class="block-title">High</div>
+							</li>
+						</ul>
+						<ul class="fields-fourth-row">
+							<li class="field-1">
+								<div class="block-title">Odd</div>
+							</li>
+							<li class="field-2">
+								<div class="block-title">2 &mdash; 6</div>
+							</li>
+							<li class="field-3">
+								<div class="block-title">7</div>
+							</li>
+							<li class="field-4">
+								<div class="block-title">8 &mdash; 12</div>
+							</li>
+							<li class="field-5">
+								<div class="block-title">Even</div>
+							</li>
+						</ul>
+
+
+						<div class="cells slideDown">
+							<!--<div class="cell" id="cell-first00"><div class="chip-bet" id="chip5c">5&cent;</div></div>-->
+							<div class="cell" id="cell-first01"></div>
+							<div class="cell" id="cell-first02"></div>
+							<div class="cell" id="cell-first03"></div>
+							<div class="cell" id="cell-first04"></div>
+							<div class="cell" id="cell-first05"><div class="chip-bet" id="chip10">10</div></div>
+							<div class="cell" id="cell-first06"></div>
+							<div class="cell" id="cell-first07"></div>
+							<div class="cell" id="cell-first08"></div>
+							<div class="cell" id="cell-first09"></div>
+							<div class="cell" id="cell-first10"></div>
+							<div class="cell" id="cell-first11"></div>
+							<!--<div class="cell" id="cell-first12"><div class="chip-bet" id="chip5c">5&cent;</div></div>-->
+
+							<div class="cell" id="cell-first1x"></div>
+							<div class="cell" id="cell-first13"></div>
+							<div class="cell" id="cell-first14"></div>
+							<div class="cell" id="cell-first15"></div>
+							<div class="cell" id="cell-first16"></div>
+							<div class="cell" id="cell-first17"></div>
+							<div class="cell" id="cell-first18"></div>
+							<div class="cell" id="cell-first19"></div>
+							<div class="cell" id="cell-first20"></div>
+							<div class="cell" id="cell-first21"></div>
+							<div class="cell" id="cell-first22"></div>
+							<div class="cell" id="cell-first23"></div>
+							<div class="cell" id="cell-first24"></div>
+
+							<!--<div class="cell" id="cell-second00"><div class="chip-bet" id="chip5c">5&cent;</div></div>-->
+							<div class="cell" id="cell-second01"></div>
+							<div class="cell" id="cell-second02"></div>
+							<div class="cell" id="cell-second03"></div>
+							<div class="cell" id="cell-second04"></div>
+							<div class="cell" id="cell-second05"></div>
+							<div class="cell" id="cell-second06"></div>
+							<div class="cell" id="cell-second07"></div>
+							<div class="cell" id="cell-second08"></div>
+							<div class="cell" id="cell-second09"><div class="chip-bet" id="chip5">5</div></div>
+							<div class="cell" id="cell-second10"></div>
+							<div class="cell" id="cell-second11"></div>
+							<!--<div class="cell" id="cell-second12"><div class="chip-bet" id="chip5c">5&cent;</div></div>-->
+
+							<!--<div class="cell" id="cell-second1x"><div class="chip-bet" id="chip5c">5&cent;</div></div>-->
+							<div class="cell" id="cell-second13"></div>
+							<div class="cell" id="cell-second14"></div>
+							<div class="cell" id="cell-second15"></div>
+							<div class="cell" id="cell-second16"></div>
+							<div class="cell" id="cell-second17"></div>
+							<div class="cell" id="cell-second18"></div>
+							<div class="cell" id="cell-second19"></div>
+							<div class="cell" id="cell-second20"></div>
+							<div class="cell" id="cell-second21"></div>
+							<div class="cell" id="cell-second22"></div>
+							<div class="cell" id="cell-second23"></div>
+							<!--<div class="cell" id="cell-second24"><div class="chip-bet" id="chip5c">5&cent;</div></div>-->
+
+							<div class="cell" id="cell-third01"></div>
+							<div class="cell" id="cell-third02"></div>
+							<div class="cell" id="cell-third03"></div>
+
+							<div class="cell" id="cell-fourth01"></div>
+							<div class="cell" id="cell-fourth02"><div class="chip-bet" id="chip100">100</div></div>
+							<div class="cell" id="cell-fourth03"></div>
+							<div class="cell" id="cell-fourth04"></div>
+							<div class="cell" id="cell-fourth05"></div>
+						</div>
+
+					</div>
+				</div>
+
+
+<!--
+				<div class="button-holder-ingame">
+					<div class="button ingame">Clear</div>
+					<div class="button ingame">Auto</div>
+					<div class="button ingame">Rebet</div>
+					<div class="button ingame">Roll</div>
+				</div>
+-->
+
+				<div class="window slideUp">
+					<div class="window-header">
+						<div class="window-title">
+							Save Bets
+						</div>
+						<div class="window-action">
+							<div class="minimize"></div>
+						</div>
+					</div>
+					<div class="window-container save-bet">
+
+						<div>
+							<div class="input">
+								<div class="label">Enter name for bet:</div>
+								<input id="save-bet-name" type="text" size="28">
+							</div>
+						</div>
+
+						<div class="button-holder">
+							<div class="button">My Bets</div>
+							<div class="button inactive">Save</div>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+
+			<div class="bottom-panel">
+				<div class="panel-left">
+					<div class="info-button"></div>
+				</div>
+
+				<div class="panel-center">
+					<div class="fair-play-button">
+						Fair Play
+					</div>
+				</div>
+
+				<div class="panel-right">
+					<div class="game-logo"></div>
+				</div>
+			</div>
+
+		</div>
+
+	</body>
+</html>

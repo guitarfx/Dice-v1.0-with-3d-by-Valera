@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>Dice Game Preview</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="styles/main.css" media="all">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	</head>
+	<body>
+
+		<div class="game-view">
+
+
+			<div class="top-panel">
+				<div class="panel-left">
+					<div class="menu-button"></div>
+					<div class="portal-logo"></div>
+				</div>
+
+				<div class="panel-right">
+					<div class="username">Dude with very very long name</div>
+					<div class="exit-button"></div>
+				</div>
+			</div>
+
+			<div class="game-holder">
+
+<!--
+				<div class="top-info-holder">
+					<div class="bet">
+						<div class="bet-title">Bet</div>
+						<div class="bet-num">1.00</div>
+					</div>
+					<div class="result">
+						<div class="result-title">Result</div>
+						<div class="result-num">-0.20</div>
+					</div>
+					<div class="balance">
+						<div class="balance-title">Balance</div>
+						<div class="balance-num">&euro;990.80</div>
+					</div>
+				</div>
+-->
+<!--
+				<div class="dice-result-wrapper slideDown">
+					<div class="dr-slide-left"></div>
+					<div class="dr-holder">
+						<ul class="dr-first-holder">
+							<li class="dr-first current">5</li>
+							<li class="dr-first">2</li>
+							<li class="dr-first">1</li>
+							<li class="dr-first">2</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+						</ul>
+						<ul class="dr-second-holder">
+							<li class="dr-second current">4</li>
+							<li class="dr-second">6</li>
+							<li class="dr-second">2</li>
+							<li class="dr-second">6</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+						</ul>
+					</div>
+					<div class="dr-slide-right"></div>
+				</div>
+-->
+
+
+				<div class="fields-wrapper slideUp">
+					<div class="fields-holder">
+						<ul class="fields-first-row">
+							<li class="field-1">1</li>
+							<li class="field-2">2</li>
+							<li class="field-3">3</li>
+							<li class="field-4">4</li>
+							<li class="field-5">5</li>
+							<li class="field-6">6</li>
+						</ul>
+						<ul class="fields-second-row">
+							<li class="field-1">1</li>
+							<li class="field-2">2</li>
+							<li class="field-3">3</li>
+							<li class="field-4">4</li>
+							<li class="field-5">5</li>
+							<li class="field-6">6</li>
+						</ul>
+						<ul class="fields-third-row">
+							<li class="field-1">
+								<div class="block-title">Low</div>
+							</li>
+							<li class="field-2">
+								<div class="block-title">Middle</div>
+							</li>
+							<li class="field-3">
+								<div class="block-title">High</div>
+							</li>
+						</ul>
+						<ul class="fields-fourth-row">
+							<li class="field-1">
+								<div class="block-title">Odd</div>
+							</li>
+							<li class="field-2">
+								<div class="block-title">2 &mdash; 6</div>
+							</li>
+							<li class="field-3">
+								<div class="block-title">7</div>
+							</li>
+							<li class="field-4">
+								<div class="block-title">8 &mdash; 12</div>
+							</li>
+							<li class="field-5">
+								<div class="block-title">Even</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+
+<!--
+				<div class="button-holder-ingame">
+					<div class="button ingame">Clear</div>
+					<div class="button ingame">Auto</div>
+					<div class="button ingame">Rebet</div>
+					<div class="button ingame">Roll</div>
+				</div>
+-->
+
+
+				<div class="window fullscreen slideUp">
+					<div class="window-header">
+						<div class="window-title">
+							Color Themes
+						</div>
+						<div class="window-action">
+							<div class="minimize"></div>
+						</div>
+					</div>
+					<div class="window-container themes">
+
+						<div class="theme-icon">
+							<img src="img/themes/default.jpg">
+							<div class="theme-title">Default</div>
+							<div class="theme-status current">&nbsp;</div>
+						</div>
+
+						<div class="theme-icon">
+							<img src="img/themes/classic.jpg">
+							<div class="theme-title">Classic</div>
+							<div class="theme-status locked">&nbsp;</div>
+						</div>
+
+						<div class="theme-icon">
+							<img src="img/themes/blue.jpg">
+							<div class="theme-title">Blue</div>
+							<div class="theme-status locked">&nbsp;</div>
+						</div>
+
+						<div class="theme-icon">
+							<img src="img/themes/yellow.jpg">
+							<div class="theme-title">Yellow</div>
+							<div class="theme-status locked">&nbsp;</div>
+						</div>
+
+						<div class="theme-icon">
+							<img src="img/themes/red.jpg">
+							<div class="theme-title">Red</div>
+							<div class="theme-status locked">&nbsp;</div>
+						</div>
+
+						<div class="theme-icon">
+							<img src="img/themes/black.jpg">
+							<div class="theme-title">Black</div>
+							<div class="theme-status locked">&nbsp;</div>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+
+			<div class="bottom-panel">
+				<div class="panel-left">
+					<div class="info-button"></div>
+				</div>
+
+				<div class="panel-center">
+					<div class="fair-play-button">
+						Fair Play
+					</div>
+				</div>
+
+				<div class="panel-right">
+					<div class="game-logo"></div>
+				</div>
+			</div>
+
+		</div>
+
+	</body>
+</html>

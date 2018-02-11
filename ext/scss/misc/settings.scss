@@ -1,0 +1,87 @@
+//colors
+
+	$red-01n: #E53935;
+	$red-01h: #EF5350;
+
+	$orange-01n: #FFA726;
+	$orange-01h: #FFB74D;
+
+	$yellow-01n: #FFCA28;
+	$yellow-01h: #FFD54F;
+
+	$green-01n: #7CB342;
+	$green-01h: #9CCC65;
+
+	$cyan-01n: #26C6DA;
+	$cyan-01h: #4DD0E1;
+
+	$blue-01n: #1E88E5;
+	$blue-01h: #42A5F5;
+
+	$indigo-01n: #5C6BC0;
+	$indigo-01h: #7986CB;
+
+	$purple-01n: #AB47BC;
+	$purple-01h: #BA68C8;
+
+	$pink-01n: #EC407A;
+	$pink-01h: #F06292;
+
+	$gray-10: #E6E6E6;
+	$gray-20: #CCCCCC;
+	$gray-30: #B3B3B3;
+	$gray-40: #999999;
+	$gray-50: #7F7F7F;
+	$gray-60: #666666;
+	$gray-70: #4C4C4C;
+	$gray-80: #333333;
+	$gray-90: #191919;
+
+	$white-a00: rgba(255,255,255,0.0);
+	$white-a10: rgba(255,255,255,0.1);
+	$white-a20: rgba(255,255,255,0.2);
+	$white-a30: rgba(255,255,255,0.3);
+	$white-a40: rgba(255,255,255,0.4);
+	$white-a50: rgba(255,255,255,0.5);
+	$white-a60: rgba(255,255,255,0.6);
+	$white-a70: rgba(255,255,255,0.7);
+	$white-a80: rgba(255,255,255,0.8);
+	$white-a90: rgba(255,255,255,0.9);
+
+	$black-a00: rgba(0,0,0,0.0);
+	$black-a10: rgba(0,0,0,0.1);
+	$black-a20: rgba(0,0,0,0.2);
+	$black-a30: rgba(0,0,0,0.3);
+	$black-a40: rgba(0,0,0,0.4);
+	$black-a50: rgba(0,0,0,0.5);
+	$black-a60: rgba(0,0,0,0.6);
+	$black-a70: rgba(0,0,0,0.7);
+	$black-a80: rgba(0,0,0,0.8);
+	$black-a90: rgba(0,0,0,0.9);
+
+// z-indexes
+
+	$z-back: 0;
+	$z-menu: 8880;
+	$z-window: 8888;
+	$z-panel: 9000;
+	$z-window-header: 9900;
+	$z-window-fullscreen: 9990;
+	$z-top: 9999;
+
+// screen sizes
+
+	$desktop-screen: "only screen and (min-width: 992px)";
+	$tablet-screen: "only screen and (min-width: 768px) and (max-width: 991px)";
+	$mobile-wide-screen: "only screen and (min-width: 480px) and (max-width: 767px)";
+	$mobile-screen: "only screen and (min-width: 320px) and (max-width: 479px)";
+	$unsupported-screen: "only screen and (max-width: 319px)";
+
+//	$page-width: 980px;
+//	$page-width-tablet: 748px;
+//	$page-width-mobile-wide: 460px;
+//	$page-width-mobile: 300px;
+
+
+	$br:4px;  // standart border-radius
+	$img: '../img/';

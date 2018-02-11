@@ -1,0 +1,40 @@
+$font-stack: PT Sans, Helvetica, sans-serif;
+
+// default color theme
+
+	$table-bg: #404040;
+	$panel-fg: #ffffff;
+	$panel-bg: #282828;
+	$window-fg: rgba(0, 0, 0, 0.7);;
+	$window-bg: #E2E0D8;
+
+	$main1-bg1: rgba(255,12,6,1.0); // Red
+	$main1-bg2: rgba(255,12,6,0.6);
+	$main1-bg3: rgba(255,12,6,0.7);
+	$main1-bg4: rgba(255,12,6,0.9);
+
+
+	$main2-bg1: rgba(0,209,10,1.0); // Green
+	$main2-bg2: rgba(0,209,10,0.5);
+	$main2-bg3: rgba(0,209,10,0.8);
+	$main2-bg4: rgba(0,209,10,0.9);
+
+
+	$main3-bg1: rgba(255,224,130,1.0); // Yellow
+	$main3-bg2: rgba(255,224,130,0.5);
+	$main3-bg3: rgba(255,224,130,0.6);
+	$main3-bg4: rgba(255,224,130,0.8);
+
+	$button-default-fg: #ffffff;
+	$button-default-bg: #2ec335;
+
+	$button-inactive-fg: rgba(255, 255, 255, 0.5);
+	$button-inactive-bg: rgba(0, 0, 0, 0.2);
+
+	$warning-fg: #ffffff;
+	$warning-bg:rgba(255,12,6,0.5);
+
+
+@import "misc/animations";
+@import "misc/settings";
+@import "elements/general";

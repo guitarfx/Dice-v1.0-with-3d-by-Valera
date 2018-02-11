@@ -1,0 +1,56 @@
+.button-holder {
+	display: inline-block;
+	width: 100%;
+	margin: 6px 0;
+	text-align: center;
+	font-size: 0px;
+
+	&-ingame {
+		//display: inline-block;
+		width: 100%;
+		margin: 6px 0;
+		text-align: center;
+		position: absolute;
+		bottom: 60px;
+	}
+}
+
+.button {
+	color: $button-default-fg;
+	background-color: $button-default-bg;
+	font-size: 18px;
+	font-weight: bold;
+	text-transform: uppercase;
+	text-align: center;
+	padding: 12px;
+	margin: 8px 8px;
+	min-width: 100px;
+	display: inline-block;
+	cursor: pointer;
+	border-radius: 4px;
+	transition: all ease-in-out 0.1s;
+
+	&.inactive {
+		color: $button-inactive-fg;
+		background-color: $button-inactive-bg;
+		cursor: default;
+	}
+
+	&.ingame {
+		color: #41413c;
+		background-color: #ffe082;
+		border-bottom: solid 2px #deba4d;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+		font-size: 16px;
+		min-width: 70px;
+		padding: 10px;
+		margin: 4px 4px 4px 4px;
+	}
+
+}
+
+
+
+.button.ingame:hover {
+	/*border-bottom: solid 0px #deba4d;*/
+}

@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <title>cannon.js mouse pick demo</title>
+        <style>
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin:0;
+                padding:0;
+                overflow: hidden;
+				  overflow-x: hidden;
+                  overflow-y: hidden;
+                  background:  rgb(38,110,38);
+            }
+			
+.wrapper {
+  position: relative;
+  min-height: 100%;
+}
+.content {
+  padding-bottom: 1px;
+  background:  rgb(38,110,38); /* 41-118-41  #C7E304;*/ /* Цвет фона */
+  height: calc(100vh - 33.15vw );
+}
+.footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 10.25vw;
+  background: #C7E3E4; /* Цвет фона */
+  /* max-height: 10vh; */
+}
+
+.header {
+  position: relative;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 10.25vw;
+  /*background: #C7E3E4;*/ /* Цвет фона */
+  background: rgb(55,55,55);
+}
+
+   .rightpic {
+   
+    /* max-height: 10vh; */
+   
+    /*left: 0;*/
+    /*bottom: calc( 10.25vw +  (100vw - 4*102/62*10.25vw*1.4)/2   );*/
+	/*position: absolute;*/
+    /*float: right; */  /* Выравнивание по правому краю */
+    /*margin: 0 0 0 0;*/ /* Отступы вокруг фотографии */
+	
+	margin-left: calc(   (100vw -  4*102/62*10.25vw*1.4)/5     );
+	margin-right: 0;
+	margin-bottom: calc(   (100vw -  4*102/62*10.25vw*1.4)/5   + 10.25vw  );
+	
+   }
+
+   
+table {
+        background:green;
+        border-radius: 10px 10px 0 0;
+        border-spacing:2px;
+		width: calc( 100vw - 20.5vw ); /* Ширина таблицы в процентах */
+}
+td {
+        padding:5px;
+        background:#FFCC99;
+        border: solid 1px rgba(41,118,41,0.3);
+		vertical-align:middle;
+		text-align: center;
+}
+td.tleft {
+        border-radius: 5px 5px 0 0;
+        
+}
+td.tcenter {
+        border-radius: 5px;
+		background:rgb(95,88,31);
+		color: white; 
+		text-align: center;
+        
+}
+td.bcenter      {
+        
+    border-radius: 5px;
+	background:rgb(31,88,95);
+	color: white;
+	text-align: center;
+}   
+
+
+#parent1 { 
+     display: table;
+	 text-align: center;
+}
+
+#child1 {
+    display: table-cell;
+    vertical-align: middle;
+	font-family: Arial; 
+	font-size: calc( 3.7vw ); 
+	color: grey;
+	overflow: hidden;
+	white-space: nowrap;
+	/*font-weight: bold;*/
+	background:rgb(55,55,55);
+	text-overflow: ellipsis;
+}
+   
+.truncate {
+  width: 40.25vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}   
+			
+			
+			
+        </style>
+    </head>
+    <body>
+	
+<!--	
+//--------------------------------- full screen ----------------------
+-->
+<!--
+<div id="fs-container">
+  <div class="fs_section" id="fs_section_img">
+  <div id="i1"><button onclick="enterFullscreen('fs_section_img')">1 Toggle iframe content fullscreen</button></div>
+  <br>
+  <div id="i22" style=""></div>
+  <br>
+  <div id="i3"></div>
+ </div>
+</div>
+-->
+
+
+
+<script>
+document.cancelFullScreen = document.cancelFullScreen || document.webkitCancelFullScreen ||      document.mozCancelFullScreen;
+function onFullScreenEnter() {
+console.log("Enter fullscreen initiated from iframe");
+};
+function onFullScreenExit() {
+console.log("Exit fullscreen initiated from iframe");
+};
+// Note: FF nightly needs about:config full-screen-api.enabled set to true.
+function enterFullscreen(id) {
+onFullScreenEnter(id);
+var el =  document.getElementById(id);
+var onfullscreenchange =  function(e){
+var fullscreenElement = document.fullscreenElement || document.mozFullscreenElement || document.webkitFullscreenElement;
+var fullscreenEnabled = document.fullscreenEnabled || document.mozFullscreenEnabled || document.webkitFullscreenEnabled;
+console.log( 'fullscreenEnabled = ' + fullscreenEnabled, ',  fullscreenElement = ', fullscreenElement, ',  e = ', e);
+}
+el.addEventListener("webkitfullscreenchange", onfullscreenchange);
+el.addEventListener("mozfullscreenchange",     onfullscreenchange);
+el.addEventListener("fullscreenchange",             onfullscreenchange);
+if (el.webkitRequestFullScreen) {
+el.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+} else {
+el.mozRequestFullScreen();
+}
+document.querySelector('#'+id + ' button').onclick = function(){
+exitFullscreen(id);
+}
+}
+function exitFullscreen(id) {
+onFullScreenExit(id);
+document.cancelFullScreen();
+document.querySelector('#'+id + ' button').onclick = function(){
+enterFullscreen(id);
+}
+}
+</script>
+	
+
+
+	
+	
+  <script src="libs1/Three.js"></script>     <!-- 69 version -->
+  <script src="libs1/Detector.js"></script>
+  <script src="build/cannon.js"></script>
+
+		
+			
+	
+		
+    <script>
+
+        var world;
+        var dt = 1 / 60 * 1.05;
+
+        var constraintDown = false;
+        var camera, scene, renderer, gplane=false, clickMarker=false;
+        var geometry, material, mesh;
+        var controls,time = Date.now();
+
+        var jointBody, constrainedBody, mouseConstraint;
+
+        var N = 1+1; // chislo kubov ------------------------------------------ http://matthiasschuetz.com/three-basicthirdpersongame/docs.php
+
+        var container, camera, scene, renderer, projector;
+
+        // To be synced
+        var meshes=[], bodies=[];
+
+        // Initialize Three.js
+        if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+		
+//        initCannon();
+//        init();
+//        animate();
+
+        function init() {
+
+            projector = new THREE.Projector();
+
+            //container = document.createElement( 'div' );
+            //document.body.appendChild( container );
+			
+			container = document.getElementById('i2'); // i2 //------------------------------------------ CONTAINER ---------
+
+            // scene
+            scene = new THREE.Scene();
+            scene.fog = new THREE.Fog( 0x000000, 500, 10000 );
+
+            // camera
+            camera = new THREE.PerspectiveCamera( 30-10, container.offsetWidth / container.offsetHeight, 0.5, 10000 );
+            camera.position.set(10, 10+5+5, -30); // 10-2-0  0
+            
+			
+			//camera.quaternion.setFromAxisAngle(new THREE.Vector3(0,1,0), Math.PI/2);
+			
+			camera.lookAt(new THREE.Vector3(0, 0+5+3-3,  0));
+			
+            scene.add(camera);
+			
+			/*
+			
+			    https://cdnjs.cloudflare.com/ajax/libs/three.js/r72/three.min.js
+				https://rawgithub.com/mrdoob/three.js/master/build/three.js
+			
+			    camera.position.x = 120;
+                camera.position.y = 60;
+                camera.position.z = 180;
+			
+			    var x = 10+( 100*(Math.sin(step)));
+                camera.lookAt(new THREE.Vector3(x,10,0));
+                lookAtMesh.position=new THREE.Vector3(x,10,0);
+			
+			*/
+			
+
+            // lights
+            var light, materials;
+            scene.add( new THREE.AmbientLight( 0x666666 ) );
+
+            light = new THREE.DirectionalLight( 0xffffff, 1.75 ); // ( 0xffffff, 1.75 );
+            var d = 20;
+
+            light.position.set( d, d+10+5+5+5, d );
+
+            light.castShadow = true;
+            //light.shadowCameraVisible = true;
+
+            light.shadowMapWidth = 1024;
+            light.shadowMapHeight = 1024;
+
+            light.shadowCameraLeft = -d;
+            light.shadowCameraRight = d;
+            light.shadowCameraTop = d;
+            light.shadowCameraBottom = -d;
+
+            light.shadowCameraFar = 3*d;
+            light.shadowCameraNear = d;
+            light.shadowDarkness = 0.5;
+
+            scene.add( light );
+
+            // floor
+            geometry = new THREE.PlaneGeometry( 100, 100, 1, 1 );
+            //geometry.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI / 2 ) );
+			
+			//var color = new THREE.Color( rgba(188, 141, 190, 1) );
+			//alert(color.getHex()); // Math.random() * 0xffffff
+            material = //new THREE.MeshLambertMaterial( { color: 0x003000 } ); //------------------------- COLOR ---- 0x777777 ---------
+			           new THREE.MeshPhongMaterial (  { map: THREE.ImageUtils.loadTexture( 'green-62-62.png' ) });
+			
+			
+			
+            markerMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
+            //THREE.ColorUtils.adjustHSV( material.color, 0, 0, 0.9 );
+            mesh = new THREE.Mesh( geometry, material );
+            mesh.castShadow = true;
+            mesh.quaternion.setFromAxisAngle(new THREE.Vector3(1,0,0), -Math.PI / 2);
+            mesh.receiveShadow = true;
+            scene.add(mesh);
+
+            // cubes ------------------------------------------------------------------------------------
+            var cubeGeo = new THREE.BoxGeometry( 1+0.5, 1+0.5, 1+0.5, 10, 10 ); //--- was 1 1 1
+            var cubeMaterial = new THREE.MeshPhongMaterial( { color: 0x888888 } );
+			
+			material2 = new THREE.MeshFaceMaterial([
+			    new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/1-blue-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/2-blue-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/3-blue-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/4-blue-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/5-blue-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/6-blue-324.png' ) })
+            ]);
+
+			material3 = new THREE.MeshFaceMaterial([
+			    new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/1-red-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/2-red-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/3-red-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/4-red-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/5-red-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/6-red-324.png' ) })
+            ]);
+
+
+			
+			//---------------------------------------------------------------- dopablyaem cubes ---------------------
+            for(var i=0; i<N; i++){
+              //cubeMesh = new THREE.Mesh(cubeGeo, cubeMaterial);
+			  if(i==0){
+				        cubeMesh = new THREE.Mesh(cubeGeo, material2);
+				}else{
+				        cubeMesh = new THREE.Mesh(cubeGeo, material3);
+				}
+                cubeMesh.castShadow = true;
+                meshes.push(cubeMesh);
+                scene.add(cubeMesh);
+            }
+
+			
+			//cubeMesh2 = new THREE.Mesh(cubeGeo, material3);
+            //cubeMesh2.castShadow = true;
+            //meshes.push(cubeMesh);//------- ???
+            //scene.add(cubeMesh2);
+
+			
+			
+            renderer = new THREE.WebGLRenderer( { antialias: true } );
+			
+          //renderer.setSize( window.innerWidth/2, window.innerHeight/2 );   //----- RAZMER SCENI --------------------- SIZE --------
+		  //alert(container.offsetHeight);
+            renderer.setSize( container.offsetWidth, container.offsetHeight ); //----- RAZMER SCENI --------------------- SIZE --------
+			
+			
+            renderer.setClearColor( scene.fog.color );
+
+            container.appendChild( renderer.domElement );
+
+            renderer.gammaInput = true;
+            renderer.gammaOutput = true;
+            renderer.shadowMapEnabled = true;
+
+            window.addEventListener( 'resize', onWindowResize, false );
+
+            window.addEventListener("mousemove", onMouseMove, false );
+            window.addEventListener("mousedown", onMouseDown, false );
+            window.addEventListener("mouseup", onMouseUp, false );
+        }
+
+        function setClickMarker(x,y,z) {
+            if(!clickMarker){
+                var shape = new THREE.SphereGeometry(0.2, 8, 8);
+                clickMarker = new THREE.Mesh(shape, markerMaterial);
+                scene.add(clickMarker);
+            }
+            clickMarker.visible = true;
+            clickMarker.position.set(x,y,z);
+        }
+
+        function removeClickMarker(){
+          clickMarker.visible = false;
+        }
+
+        function onMouseMove(e){
+            // Move and project on the plane
+            if (gplane && mouseConstraint) {
+                var pos = projectOntoPlane(e.clientX,e.clientY,gplane,camera);
+                if(pos){
+                    setClickMarker(pos.x,pos.y,pos.z,scene);
+                    moveJointToPoint(pos.x,pos.y,pos.z);
+                }
+            }
+        }
+
+        function onMouseDown(e){
+		    body.requestFullscreen();//--- full screen -----
+            // Find mesh from a ray
+            var entity = findNearestIntersectingObject(e.clientX,e.clientY,camera,meshes);
+            var pos = entity.point;
+            if(pos && entity.object.geometry instanceof THREE.BoxGeometry){
+                constraintDown = true;
+                // Set marker on contact point
+                setClickMarker(pos.x,pos.y,pos.z,scene);
+
+                // Set the movement plane
+                setScreenPerpCenter(pos,camera);
+
+                var idx = meshes.indexOf(entity.object);
+                if(idx !== -1){
+                    addMouseConstraint(pos.x,pos.y,pos.z,bodies[idx]);
+                }
+            }
+        }
+
+        // This function creates a virtual movement plane for the mouseJoint to move in
+        function setScreenPerpCenter(point, camera) {
+            // If it does not exist, create a new one
+            if(!gplane) {
+              var planeGeo = new THREE.PlaneGeometry(100,100);
+              var plane = gplane = new THREE.Mesh(planeGeo,material);
+              plane.visible = false; // Hide it..
+              scene.add(gplane);
+            }
+
+            // Center at mouse position
+            gplane.position.copy(point);
+
+            // Make it face toward the camera
+            gplane.quaternion.copy(camera.quaternion);
+        }
+
+		//--------------------------------------------------------------- MOUSE UP ----------------------------
+        function onMouseUp(e) {
+          constraintDown = false;
+          // remove the marker
+          removeClickMarker();
+
+          // Send the remove mouse joint to server
+          removeJointConstraint();
+		  
+		  //--------------------------------------------- GRAVI ------------------
+		  world.gravity.set(0,-10,0);
+		  boxBody.velocity.set(0, -1, +1*0.25);
+		  
+        }
+
+		
+		
+        var lastx,lasty,last;
+        function projectOntoPlane(screenX,screenY,thePlane,camera) {
+            var x = screenX;
+            var y = screenY;
+            var now = new Date().getTime();
+            // project mouse to that plane
+            var hit = findNearestIntersectingObject(screenX,screenY,camera,[thePlane]);
+            lastx = x;
+            lasty = y;
+            last = now;
+            if(hit)
+                return hit.point;
+            return false;
+        }
+        function findNearestIntersectingObject(clientX,clientY,camera,objects) {
+            // Get the picking ray from the point
+            var raycaster = getRayCasterFromScreenCoord(clientX, clientY, camera, projector);
+
+            // Find the closest intersecting object
+            // Now, cast the ray all render objects in the scene to see if they collide. Take the closest one.
+            var hits = raycaster.intersectObjects(objects);
+            var closest = false;
+            if (hits.length > 0) {
+                closest = hits[0];
+            }
+
+            return closest;
+        }
+
+        // Function that returns a raycaster to use to find intersecting objects
+        // in a scene given screen pos and a camera, and a projector
+        function getRayCasterFromScreenCoord (screenX, screenY, camera, projector) {
+            var mouse3D = new THREE.Vector3();
+            // Get 3D point form the client x y
+            mouse3D.x = (screenX / window.innerWidth) * 2 - 1;
+            mouse3D.y = -(screenY / window.innerHeight) * 2 + 1;
+            mouse3D.z = 0.5;
+            return projector.pickingRay(mouse3D, camera);
+        }
+
+		//----------------------------------------------------------------------------------------------------  win resize ----
+        function onWindowResize() {
+            camera.aspect = container.offsetWidth / container.offsetHeight;   //window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            //controls.handleResize();
+            renderer.setSize( container.offsetWidth, container.offsetHeight );
+        }
+
+        function animate() {
+            requestAnimationFrame( animate );
+            //controls.update();
+            updatePhysics();
+            render();
+        }
+
+        function updatePhysics(){
+            world.step(dt);
+            for(var i=0; i !== meshes.length; i++){
+                meshes[i].position.copy(bodies[i].position);
+                meshes[i].quaternion.copy(bodies[i].quaternion);
+            }
+        }
+
+        function render() {
+            renderer.render(scene, camera);
+        }
+
+        function initCannon(){
+            // Setup our world
+            world = new CANNON.World();
+            world.quatNormalizeSkip = 0;
+            world.quatNormalizeFast = false;
+
+			//-------------------------------------------- GRAVITATSYA ---------------------------
+            //world.gravity.set(0,-10,0);
+			
+			
+            world.broadphase = new CANNON.NaiveBroadphase();
+
+            // Create boxes
+            var mass = 5, radius = 1.3;
+            boxShape = new CANNON.Box(new CANNON.Vec3(0.5+0.25,   0.5+0.25,   0.5+0.25));
+            for(var i=0; i<N; i++){
+                boxBody = new CANNON.Body({ mass: mass });
+                boxBody.addShape(boxShape);
+				
+				
+				if(i==0){				
+                            boxBody.position.set(0+2-0.5 -i*(2.5+0.7),  5+3+0.4,  0); //---------------------- POLOZENIE BOX -----------
+						}else{
+						    boxBody.position.set(0+2-0.5 -i*(2.5+0.7),  5+3,  0); //---------------------- POLOZENIE BOX -----------
+						}
+								
+				
+				//---------------------------------------- zakrutit kubik tut !!! -----------------
+				if(i==0){
+				           boxBody.angularVelocity.set(3.7,-4.35,-3.9);
+						}else{
+						   boxBody.angularVelocity.set(-3.117,-4.35-1,3.2229);
+						}
+				//boxBody.angularVelocity.z = 1;
+				
+				if(i==0){
+				           // boxBody.velocity.set(0-1, 0, -1+1); //------------- *,-Y,* - VNIZ, 1-VDAL -------- skorosttela ---------------
+						}else{
+						  //  boxBody.velocity.set(1, 0, -1+1);
+                        }						
+				
+				//body.position.set(x, y, z);
+                //body.quaternion.set(a, b, c, w);
+                //body.velocity.set(0, 0, 0);
+                //body.angularVelocity.set(0, 0, 0);
+				
+                world.addBody(boxBody);
+                bodies.push(boxBody);
+            }
+
+            // Create a plane
+            var groundShape = new CANNON.Plane();
+            var groundBody = new CANNON.Body({ mass: 0 });
+            groundBody.addShape(groundShape);
+            groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0),-Math.PI/2);
+            world.addBody(groundBody);
+
+            // Joint body
+            var shape = new CANNON.Sphere(0.1);
+            jointBody = new CANNON.Body({ mass: 0 });
+            jointBody.addShape(shape);
+            jointBody.collisionFilterGroup = 0;
+            jointBody.collisionFilterMask = 0;
+            world.addBody(jointBody)
+        }
+
+        function addMouseConstraint(x,y,z,body) {
+          // The cannon body constrained by the mouse joint
+          constrainedBody = body;
+
+          // Vector to the clicked point, relative to the body
+          var v1 = new CANNON.Vec3(x,y,z).vsub(constrainedBody.position);
+
+          // Apply anti-quaternion to vector to tranform it into the local body coordinate system
+          var antiRot = constrainedBody.quaternion.inverse();
+          pivot = antiRot.vmult(v1); // pivot is not in local body coordinates
+
+          // Move the cannon click marker particle to the click position
+          jointBody.position.set(x,y,z);
+
+          // Create a new constraint
+          // The pivot for the jointBody is zero
+          mouseConstraint = new CANNON.PointToPointConstraint(constrainedBody, pivot, jointBody, new CANNON.Vec3(0,0,0));
+
+          // Add the constriant to world
+          world.addConstraint(mouseConstraint);
+        }
+
+        // This functions moves the transparent joint body to a new postion in space
+        function moveJointToPoint(x,y,z) {
+            // Move the joint body to a new position
+            jointBody.position.set(x,y,z);
+            mouseConstraint.update();
+        }
+
+        function removeJointConstraint(){
+          // Remove constriant from world
+          world.removeConstraint(mouseConstraint);
+          mouseConstraint = false;
+        }
+
+        </script>
+		
+		
+		
+
+
+		
+		
+		
+		
+<div class="wrapper">
+
+  <div class="header">
+     <img src=Left-verh-62-62.png style="float : left; height: 10.25vw;">
+	 <img src=Logo-verh-148-62.png style="float : left;  margin: 0 0 0 1; height: 10.25vw;">
+	 
+	 <!--
+     <img src=Pravo-verh-krest-62-62.png style="float : right; height: 10.25vw;">
+     -->
+	 
+	 <!--
+	 <img src=Seriy-fon-62.png style="float : left; width: calc(100vw - 148/62*(10.25vw) - 10.25vw - 10.25vw - 1px - 1px - 1px); height: 10.25vw; margin: 0 0 0 1;">
+	 -->
+	 <div id="parent1" style="float : left; width: calc(100vw - 148/62*(10.25vw) - 10.25vw - 10.25vw - 1px - 1px - 1px); height: 10.25vw; margin: 0 0 0 1;">
+	   <div id="child1">
+	     <center> 
+	     <div class="truncate">
+	       <span id="username">User Name 111111111111111</span>
+		 </div>
+		 </center>
+		</div>
+	 </div>
+	 
+
+     <img src=Pravo-verh-krest-62-62.png style="float : right; width : calc( 10.25vw - 0*1px - 0*1px - 0*1px    ) ; height: 10.25vw;">
+
+	 
+	<!--
+     header
+	-->
+	 
+  </div>
+
+
+  <div class="content">
+  
+  <!--
+    t1<br>
+    t2<br>
+  --> 
+   <center>
+   <font color=#FFFFFF face="arial">
+   <table id="t">
+        <tr>
+		<!--
+                <td class="tleft">Cell 1-1</td>
+		-->
+                <td class="tcenter"  style="background: rgb(226,29,29);">1</td>
+                <td class="tcenter">2</td>
+				<td class="tcenter">3</td>
+                <td class="tcenter">4</td>
+		        <td class="tcenter">5</td>
+                <td class="tcenter">6</td>
+		        <td class="tcenter">7</td>
+                <td class="tcenter">8</td>
+        <!--		
+                <td>Cell 1-3</td>
+		-->
+        </tr>
+        <tr>
+		<!--
+                <td>Cell 2-1</td>
+		-->		
+                <td class="bcenter"  style="background: rgb(43,43,243);">1</td>
+                <td class="bcenter">2</td>
+                <td class="bcenter">3</td>
+                <td class="bcenter">4</td>
+                <td class="bcenter">5</td>
+                <td class="bcenter">6</td>
+                <td class="bcenter">7</td>
+                <td class="bcenter">8</td>
+        <!--				
+                <td>Cell 2-3</td>
+		-->
+        </tr>
+</table>
+</font>
+</center>
+
+   
+  <!-- 
+   <div><button id="up">button</button></div>
+  -->
+   t3<br>
+   
+   
+   <!------------------------------ 3D Js -------------------------------------------------------------------------->
+   <div id="Stats-output">
+   </div>
+   <!-- Div which will hold the Output -->
+   <center>
+   
+   <!--
+   <div id="WebGL-output" style="position: absolute; bottom: 22.75vw; right: 10.25vw; background: rgb(41,118,41); width: calc(100vw - 10.25vw - 10.25vw); height: calc(  (100vh - 33.15vw) / 2   );  overflow: hidden;" >
+   </div>
+   -->
+   
+   <!--
+   <div id="WebGL-output" style="position: absolute; top: calc(10.25vw + 70px); right: 10.25vw; background: rgb(41,118,41); width: calc(100vw - 10.25vw - 10.25vw); height: calc(  (100vh - 33.15vw) / 2   );  overflow: hidden;" >
+   </div>
+   -->
+   
+      
+   <div id="i2" style="position: absolute; top: calc(10.25vw + 70px); right: calc(10.25vw - 10.25vw); background: rgb(41,118,41); width: calc(100vw - 10.25vw - 10.25vw + 20.5vw ); height: calc(  100vh - 34.15vw - 70px   );  overflow: hidden;" >
+   </div>
+   
+   
+   <!-- 100vh - 33.15vw ---- WebGL-output -->
+   
+   </center>
+      
+   t4<br>
+   
+   <!------------------------------------------------------- code --------------------------------------------->
+   
+   <!------------------------- end of 3d code --------------->
+   
+   
+   
+   
+   <!--------------------------------------------------- BOTTOM ------------------------------------>
+   <!-- max-height: 50px; max-width: 140px; 3 -->
+	
+    <div style="position: absolute; bottom: 0; overflow: hidden;">
+		<img src=button-Clear-niz-102-62.png  style="width: calc(102/62*10.25vw*1.4); height: 10.25vw;  " class="rightpic" 
+		><img src=button-Auto-niz-102-62.png   style="width: calc(102/62*10.25vw*1.4); height: 10.25vw; " class="rightpic" 
+		><img src=button-REBET-niz-102-62.png  style="width: calc(102/62*10.25vw*1.4); height: 10.25vw; " class="rightpic" 
+		><img src=button-ROLL-102-62.png       style="width: calc(102/62*10.25vw*1.4); height: 10.25vw; " class="rightpic" >
+   	</div>
+    
+   
+  <!-- 
+   <div style="display: flex; ">
+       <img src=button-REBET-niz-102-62.png width=70%  style="align-self: flex-end;">
+   </div>   
+   <div  style="display: table-cell; vertical-align: bottom; border: 1px solid #f00; height: 200px; width: 200px; " >Hello</div>  
+  -->
+  
+   
+
+ </div>
+  
+
+  <div class="footer"> 
+      
+     <img src=Niz-left-square-62-62.png  style="float : left;  width: 10.25vw; ">
+ 
+	<!--
+	 <img src=Niz-left-square-62-62.png  style="position: absolute; left : 0;">
+	--> 
+	 
+	 
+	<!-- grey fon -->
+	 <img src=Seriy-fon-62.png style="float : left; width: calc( (100vw - 140/62*10.25vw - 85/62*10.25vw - 10.25vw) / 2 + 9px); height: 10.25vw;  margin: 0 0 0 1; ">
+	
+	 
+	 <!-- center -->
+	 <img src=Niz-Fire-Play-140-62.png   style="float : left; margin: 0 0 0 1; width: calc( 140/62*10.25vw ); ">
+	 
+	 <!--
+	 <img src=Niz-Fire-Play-140-62.png   style="position: absolute; left : calc(50% - 70px);">
+	 -->
+	 
+	 
+	 <!-- grey fon -->
+	 <img src=Seriy-fon-62.png style="float : left; width: calc( (100vw - 140/62*10.25vw - 85/62*10.25vw - 10.25vw) / 2 - 13px); height: 10.25vw;  margin: 0 0 0 1; ">
+	
+	 
+      
+     <img src=Logo-niz-pravo.png style="position: absolute; right : 0; width: calc(85/62*10.25vw); ">
+	 
+	 <!--
+	 <img src=Pravo-verh-krest-62-62.png style="position: absolute; right : 186; width: 4.85vw;">
+	 -->
+	 <!--
+     futer
+	 -->
+  </div>
+
+</div>
+		
+		
+		
+		
+		
+		
+    <div id="i22" style="position: absolute; left : calc(50vw - 25%); top : 210px; height: 25%;"></div>
+	<script>	
+		initCannon();
+        init();
+        animate();
+    </script>
+	
+		
+		
+		
+		
+		
+		
+		
+		
+    </body>
+</html>

@@ -1,0 +1,160 @@
+.chips-wrapper {
+	width: 100%;
+	display:inline-block;
+	text-align: center;
+
+    position: absolute;
+    bottom: 122px;
+}
+
+.chips-slide-left {
+	width: 6%;
+	height: 60px;
+	display: inline-block;
+	opacity: 0.5;
+	float: left;
+	background: url(#{$img}icon-left-small.png) no-repeat 75% center;
+}
+
+.chips-slide-right {
+	width: 6%;
+	height: 60px;
+	display: inline-block;
+	opacity: 0.5;
+	float: right;
+	background: url(#{$img}icon-right-small.png) no-repeat 25% center;
+}
+
+.chips-holder {
+	width: 88%;
+	height: 66px;
+	cursor: default;
+	display: inline-block;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.chip {
+	width: 48px;
+	height: 48px;
+	line-height: 48px;
+	font-size: 22px;
+	font-weight: bold;
+	text-align: center;
+	color:#554f4f;
+	background: url(#{$img}chip-texture.png) no-repeat center;
+	background-size: 100%;
+	background-color: #dadada;
+	cursor: pointer;
+	border-radius: 100%;
+	box-shadow: 0px 2px 4px #000, 0px 0px 2px 1px rgba(0, 0, 0, 0.5);
+	display: inline-block;
+	margin: 6px;
+	vertical-align: top;
+
+	&.active {
+		box-shadow: 0px 2px 4px #000, 0px 0px 2px 1px rgba(0, 0, 0, 0.5), 0px 0px 3px 2px white, 0px 1px 6px 4px #ffe082;
+	}
+}
+
+#chip-clear {
+	background: url(#{$img}chip-texture-x.png) no-repeat center;
+	background-color: #a1a1a1;
+}
+
+.cells {
+
+	#chip100,
+	#chip200,
+	#chip500 {
+		font-size: 12px;
+	}
+
+	#chip5c,
+	#chip10c,
+	#chip25c,
+	#chip50c {
+		font-size: 12px;
+	}
+
+}
+
+#chip100,
+#chip200,
+#chip500 {
+	font-size: 18px;
+}
+
+#chip5c,
+#chip10c,
+#chip25c,
+#chip50c {
+	font-size: 16px;
+}
+
+
+#chip5c,
+#chip5,
+#chip500 {
+	background-color: #e53935;
+}
+
+#chip10c,
+#chip10,
+#chip1k {
+	background-color: #2ec335;
+}
+
+#chip25c,
+#chip25 {
+	background-color: #00b8d4;
+}
+
+#chip50c,
+#chip50 {
+	background-color: #554f4f;
+}
+
+#chip1,
+#chip100 {
+	background-color: #ffb300;
+}
+
+#chip2,
+#chip200 {
+	background-color: #7e57c2;
+}
+
+.chip-bet {
+	width: 34px;
+	height: 34px;
+	line-height: 34px;
+	font-size: 14px;
+	font-weight: bold;
+	text-align: center;
+	color:#554f4f;
+	background: url(#{$img}chip-texture.png) no-repeat center;
+	background-size: 110%;
+	background-color: #dadada;
+	cursor: pointer;
+	border-radius: 100%;
+	box-shadow: 0px 2px 4px #000;
+	display: inline-block;
+	margin: 2px;
+}
+
+.chip-hint-icon {
+	border-radius: 100%;
+	border: solid  3px $button-default-bg;
+	background: $button-default-fg;
+	width: 16px;
+	height: 16px;
+	line-height: 16px;
+	color: $window-fg;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: center;
+	display: inline-block;
+	cursor: default;
+	box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.7);
+}

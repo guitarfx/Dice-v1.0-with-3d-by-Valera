@@ -1,0 +1,96 @@
+.input {
+	color: rgba(0, 0, 0, 0.4);
+	margin-bottom: 6px;
+	border-radius: 4px;
+	display: inline-block;
+	transition: all ease-in-out 0.3s;
+
+	&.warning {
+		color: $warning-fg;
+		background-color: $warning-bg;
+	}
+
+	.label {
+		font-size: 18px;
+		line-height: 36px;
+		font-weight: bold;
+	}
+
+	input {
+		background-color: white;
+		border: solid 1px rgba(0, 0, 0, 0.3);
+		border-radius: 4px;
+		padding: 0 12px;
+		font-size: 18px;
+		font-weight: bold;
+		color: rgba(0, 0, 0, 0.6);
+		line-height: 38px;
+		margin: 4px 0 18px 0;
+	}
+
+}
+
+.radio {
+	background-color: white;
+	border: solid 1px rgba(0, 0, 0, 0.3);
+	border-radius: 100%;
+	width: 32px;
+	height: 32px;
+	margin: 0 auto;
+	cursor: pointer;
+    box-shadow: inset 0 0 0 0 white;
+	transition: all ease-in-out 0.3s;
+
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.2);
+	    box-shadow: inset 0 0 0 8px white;
+	}
+
+	&.current {
+		background-color: $window-fg;
+	    box-shadow: inset 0 0 0 6px white;
+	}
+
+}
+
+.switch {
+	border-radius: 14px;
+	border: solid 1px rgba(0, 0, 0, 0.2);
+	background-color: rgba(0, 0, 0, 0.1);
+	cursor: pointer;
+	width: 60px;
+	height: 28px;
+	position: absolute;
+	transition: all ease-in-out 0.3s;
+
+	.switch-handle {
+		border-radius: 100%;
+		display: inline-block;
+		border: solid 1px rgba(0, 0, 0, 0.2);
+		width: 24px;
+		height: 24px;
+		margin: 1px;
+		background-color: $window-bg;
+		position: relative;
+		right: 32px;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+		transition: all ease-in-out 0.3s;
+
+
+	}
+
+	&:hover {
+		.switch-handle {
+			background-color: $button-default-fg;
+		}
+	}
+
+	&.on {
+		background-color: $button-default-bg;
+
+		.switch-handle {
+			right: 0px;
+			background-color: $button-default-fg;
+		}
+	}
+}

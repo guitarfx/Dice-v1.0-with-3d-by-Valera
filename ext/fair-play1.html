@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>Dice Game Preview</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="styles/main.css" media="all">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	</head>
+	<body>
+
+		<div class="game-view">
+
+
+			<div class="top-panel">
+				<div class="panel-left">
+					<div class="menu-button"></div>
+					<div class="portal-logo"></div>
+				</div>
+
+				<div class="panel-right">
+					<div class="username">Dude with very very long name</div>
+					<div class="exit-button"></div>
+				</div>
+			</div>
+
+
+			<div class="game-holder">
+
+
+				<div class="background-logo fadeIn"></div>
+
+
+				<div class="dice-red slideRight"><img src="img/dice-red.png"></div>
+				<div class="dice-green slideLeft"><img src="img/dice-green.png"></div>
+
+
+
+				<div class="top-info-holder">
+					<div class="bet">
+						<div class="bet-title">Bet</div>
+						<div class="bet-num">1.00</div>
+					</div>
+					<div class="result">
+						<div class="result-title">Result</div>
+						<div class="result-num">-0.20</div>
+					</div>
+					<div class="balance">
+						<div class="balance-title">Balance</div>
+						<div class="balance-num">&euro;990.80</div>
+					</div>
+				</div>
+
+
+
+				<div class="dice-result-wrapper slideDown" style=";">
+					<div class="dr-slide-left"></div>
+					<div class="dr-holder">
+						<ul class="dr-first-holder">
+							<li class="dr-first current">5</li>
+							<li class="dr-first">2</li>
+							<li class="dr-first">1</li>
+							<li class="dr-first">2</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+						</ul>
+						<ul class="dr-second-holder">
+							<li class="dr-second current">4</li>
+							<li class="dr-second">6</li>
+							<li class="dr-second">2</li>
+							<li class="dr-second">6</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+						</ul>
+					</div>
+					<div class="dr-slide-right"></div>
+				</div>
+
+
+	<!--
+				<div class="bets-wrapper slideDown">
+					<div class="bets-holder">
+						<ul class="bets-first-row">
+							<li class="bets-first">1</li>
+							<li class="bets-first">2</li>
+							<li class="bets-first">3</li>
+							<li class="bets-first">4</li>
+							<li class="bets-first current">5</li>
+							<li class="bets-first">6</li>
+						</ul>
+						<ul class="bets-second-row">
+							<li class="bets-second">1</li>
+							<li class="bets-second">2</li>
+							<li class="bets-second">3</li>
+							<li class="bets-second current">4</li>
+							<li class="bets-second">5</li>
+							<li class="bets-second">6</li>
+						</ul>
+						<ul class="bets-third-row">
+							<li class="bets-third">Low</li>
+							<li class="bets-third">Middle</li>
+							<li class="bets-third">High</li>
+						</ul>
+						<ul class="bets-fourth-row">
+							<li class="bets-fourth">Odd</li>
+							<li class="bets-fourth current">2 &mdash; 6</li>
+							<li class="bets-fourth">7</li>
+							<li class="bets-fourth">8 &mdash; 12</li>
+							<li class="bets-fourth">Even</li>
+						</ul>
+
+						<div class="bets-actions">
+							<div class="bets-actions-button">Save current bet</div>
+							<div class="bets-actions-button">My bets</div>
+							<div class="bets-actions-button disabled">Statistics</div>
+						</div>
+
+					</div>
+				</div>
+	-->
+
+	<!--
+				<div class="chips-wrapper slideUp">
+					<div class="chips-slide-left"></div>
+						<div class="chips-holder">
+							<div class="chip" id="chip5c">5&cent;</div>
+							<div class="chip" id="chip10c">10&cent;</div>
+							<div class="chip" id="chip25c">25&cent;</div>
+							<div class="chip" id="chip50c">50&cent;</div>
+							<div class="chip active floating" id="chip1">1</div>
+							<div class="chip" id="chip2">2</div>
+							<div class="chip" id="chip5">5</div>
+							<div class="chip" id="chip10">10</div>
+							<div class="chip" id="chip25">25</div>
+							<div class="chip" id="chip50">50</div>
+							<div class="chip" id="chip100">100</div>
+							<div class="chip" id="chip200">200</div>
+							<div class="chip" id="chip500">500</div>
+							<div class="chip" id="chip1k">1k</div>
+						</div>
+					<div class="chips-slide-right"></div>
+				</div>
+	-->
+
+
+				<div class="button-holder-ingame">
+					<div class="button ingame">Clear</div>
+					<div class="button ingame">Auto</div>
+					<div class="button ingame">Rebet</div>
+					<div class="button ingame">Roll</div>
+				</div>
+
+			</div>
+
+			
+			
+			<div class="bottom-panel open slideUp" style="top:0px;">
+				<div class="panel-left">
+				    <a href="http://betvoyage.com/fair-play/"  target="_blank" >
+						<div class="info-button"></div>
+					</a>	
+				</div>
+
+				<div class="panel-center">
+					<div class="fair-play-button">
+						Fair Play
+					</div>
+				</div>
+
+				<div class="panel-right">
+					<div class="game-logo"></div>
+					<div class="window-action">
+						<div class="minimize"></div>
+					</div>
+				</div>
+
+				
+				
+				<script>
+				function maxLengthCheck(object) {
+					if (object.value.length > object.maxLength)
+					object.value = object.value.slice(0, object.maxLength)
+				}
+    
+				function isNumeric (evt) {
+					var theEvent = evt || window.event;
+					var key = theEvent.keyCode || theEvent.which;
+					key = String.fromCharCode (key);
+					var regex = /[0-9]|\./;
+					if ( !regex.test(key) ) {
+					theEvent.returnValue = false;
+					if(theEvent.preventDefault) theEvent.preventDefault();
+					}
+				}
+				</script>
+
+				
+				<div class="window fair-play" style="height:100%">
+					<div class="window-container fair-play"  style="height:100%">
+
+					<h1 style="min-height: 20px; height:40px; margin-top:10px;" >Randomness Control</h1>
+					
+					
+					 <div style="display:flex;  justify-content: center; background:rgba(255,0,0,0.001)">
+						<div style="display:flex; justify-content: space-around; min-height:15px; height:110px; width:340px; background:rgba(255,0,255,0.001)">
+						<style>.inpsize{ width: 20px; min-width:68px; }</style>
+							<div class="input">
+								<div class="label">Shift</div>
+								<input id="rc-shift" style="width: 20px; min-width:45px; margin-top:-1px;" value="0" type="number" size="2" min="0" max="5" placeholder="0..5" maxlength="1" oninput="maxLengthCheck(this)"  onkeypress="return isNumeric(event)"  onKeyUp="if(this.value>5){this.value='5';}else if(this.value<0){this.value='0';}"  required>
+							</div>
+							<div class="input">
+								<div class="label">Init</div>
+								<input id="rc-spins"  style="width: 20px; min-width:45px; margin:0px;"  value="10" type="number" size="2" min="0" max="50" placeholder="0..50" maxlength="2"  oninput="maxLengthCheck(this)"  onkeypress="return isNumeric(event)"  onKeyUp="if(this.value>50){this.value='50';}else if(this.value<0){this.value='0';}"  required>
+							</div>
+							
+							<div class="input">
+								<div class="label">Left</div>
+								<input readonly id="rc-left-spins"  style="opacity:0.5; width: 20px; min-height:45px; min-width:45px; margin:0px;"  value="0" type="number" size="2" min="0" max="50" placeholder="0..50" maxlength="2"  oninput="maxLengthCheck(this)"  onkeypress="return isNumeric(event)"  onKeyUp="if(this.value>50){this.value='50';}else if(this.value<0){this.value='0';}"  required>
+							</div>
+							
+							<div class="input">
+								<div class="label">&nbsp;</div>
+								<div id="rc-new" class="button" style=";">New</div>
+							</div>
+						</div>
+					  </div>	
+
+					  
+
+					 <div style="display:flex;  justify-content: center; background:rgba(0,0,255,0.001)">
+						<div style="display:flex; justify-content: space-around; width:340px; margin-top:5px;">
+						<style>.inpsize{ width: 20px; min-width:68px; }</style>
+						
+							<div class="input">
+								<div class="label">&nbsp;</div>
+								<div id="rc-prev" class="button" style=";">Prev</div>
+							</div>
+
+							<!--
+							<div class="input">
+								<div class="label">5 Files</div>
+								<input readonly id="rc-spins"  style="width: 20px; min-width:45px; margin:0px;"  value="2" type="number" size="2" min="0" max="50" placeholder="0..50" maxlength="2"  oninput="maxLengthCheck(this)"  onkeypress="return isNumeric(event)"  onKeyUp="if(this.value>50){this.value='50';}else if(this.value<0){this.value='0';}"  required>
+							</div>
+							-->
+							
+							<div class="input">
+								<div class="label">Password:</div>
+								<input readonly id="rc-password"  style="opacity:0.5; width: 20px; min-height:45px; min-width:35px; margin:0px;"  value="0" type="" size="2"  placeholder=""   >
+							</div>
+							
+							<div class="input">
+								<div class="label">&nbsp;</div>
+								<div id="rc-next" class="button" style=";">Next</div>
+							</div>
+							
+							<div class="input" style="margin-left:5px;">
+								<div class="label">&nbsp;</div>
+								<div id="rc-copyp" class="button" style=";">Copy</div>
+							</div>
+							
+							
+						</div>
+					  </div>	
+
+					  
+					  
+					  
+						<div style="background:rgba(255,255,0,0.001);">
+							<div class="input" style="min-height: 20px; height:110px;">
+							    <div class="label" style="min-height: 20px; height:70px;">
+								     Download file: <a id="zip_file_name" style="text-decoration: underline;cursor: pointer;" href="/RC/test.zip" target="_blank" >empty.zip</a>
+							    </div>
+								
+								<div style="display:flex">
+								     <div class="label">Checksum:</div>
+							         <input id="rc-checksum" type="text" size="14" style="margin-right:5px; margin-left:5px;">
+								</div>
+							</div>
+						</div>
+
+						
+						
+						<div class="button-holder" style="background:rgba(255,0,0,0.001);  white-space: nowrap;">
+						<style>.butsize{ width: 20px; min-width:50px; }</style>
+						    <div id="rc-end" class="button butsize"    style="display:none; margin-left:3px; margin-right:3px; min-width:40px;">End</div>
+							<div id="rc-copy" class="button butsize"   style="margin-left:3px; margin-right:3px;">Copy</div>
+							<div id="rc-check" class="button butsize"  style="margin-left:3px; margin-right:3px; min-width:68px;">Check</div>
+							<div id="rc-auto" class="button butsize"   style="margin-left:3px; margin-right:3px;">Auto</div>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+
+<script>
+var copybutton = document.getElementById("rc-copy");
+copybutton.addEventListener('click', showpropval1);
+function showpropval1() {
+    var input1 = document.getElementById("rc-checksum");
+    input1.select(); // select offscreen inputs text
+    document.execCommand("copy"); // copy it
+	//alert("---click JS---");
+} 
+
+var copybuttonP = document.getElementById("rc-copyp");
+copybuttonP.addEventListener('click', showpropval2);
+function showpropval2() {
+    var input2 = document.getElementById("rc-password");
+    input2.select(); // select offscreen inputs text
+    document.execCommand("copy"); // copy it
+	//alert("---click JS---");
+} 
+
+</script>		
+		
+
+	</body>
+</html>

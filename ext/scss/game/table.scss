@@ -1,0 +1,45 @@
+.game-view {
+//	background: #5b584a; /* fallback */
+//	background-image: url("#{$img}whitenoize.png"); /* fallback */
+//	background-image: url("#{$img}whitenoize.png"), linear-gradient(#949079, #5B584A); /* W3C */
+	height: 100%;
+	background: $table-bg;
+	background-image: url("#{$img}whitenoize.png");
+}
+
+.game-holder {
+	padding-top: 96px;
+}
+
+.background-logo {
+	width: 100%;
+	height: 300px;
+	position: fixed;
+	top: 274px;
+	margin: 0 auto;
+	background: url(#{$img}background-logo.png) no-repeat center;
+}
+
+.under-construction {
+	text-align: center;
+	font-size: 24px;
+	font-weight: bold;
+	color: rgba(0, 0, 0, 0.5);
+	//margin-top: 44px;
+	cursor: default;
+	text-transform:uppercase;
+	//text-shadow: 0 2px 0 #a7a7a7, 0 12px 9px rgba(0, 0, 0, 0.5);
+    padding: 30px;
+    background: #ffe082;
+    box-shadow: 0 2px 6px black;
+    display: block;
+    position: relative;
+    bottom: 189px;
+}
+
+@import "top-info";
+@import "dices-results";
+@import "fields";
+@import "dices-bets";
+@import "dices";
+@import "chips";

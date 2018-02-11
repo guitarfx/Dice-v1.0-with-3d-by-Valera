@@ -1,0 +1,16 @@
+html,
+body {
+	background: #000;
+	margin: 0px;
+	height: 100%;
+	font-size: 0;
+}
+
+
+@import "panels";
+@import "menu";
+@import "buttons";
+@import "inputs";
+@import "tables";
+@import "windows";
+@import "../game/table"

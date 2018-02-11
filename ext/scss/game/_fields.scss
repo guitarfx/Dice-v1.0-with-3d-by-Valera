@@ -1,0 +1,396 @@
+.fields-wrapper {
+	width: 100%;
+//	display:inline-block;
+	text-align: center;
+}
+
+.fields-holder {
+	//width: 88%; // Didn't work with chips cells
+	width: 362px; // Crutch for chips cells
+	cursor: default;
+	display: inline-block;
+	white-space: nowrap;
+	//overflow: hidden;
+}
+
+.fields-first-row,
+.fields-second-row,
+.fields-third-row,
+.fields-fourth-row {
+	padding: 0;
+	margin: 0;
+
+	.field-1,
+	.field-2,
+	.field-3,
+	.field-4,
+	.field-5,
+	.field-6 {
+		position: relative;
+		height: 58px;
+		font-size: 0px;
+		border-radius: 4px;
+		margin: 1px;
+		display: inline-block;
+		cursor: default;
+		overflow: hidden;
+		transition: all ease-in-out 0.3s;
+
+		.block-title {
+			font-size: 16px;
+			font-weight: bold;
+			text-transform: uppercase;
+			width: 100%;
+			position: absolute;
+			bottom: 4px;
+		}
+
+		.chart-left{
+			position: absolute;
+			display: inline-block;
+			bottom: 0px;
+			left: 0px;
+			width: 50%;
+			//border-radius: 0 0 0 4px;
+		}
+
+		.chart-right{
+			position: absolute;
+			display: inline-block;
+			bottom: 0px;
+			right: 0px;
+			width: 50%;
+			//border-radius: 0 0 4px 0;
+		}
+
+	}
+
+}
+
+.fields-first-row,
+.fields-second-row {
+	.field-1 {
+		background-image: url(#{$img}dice-dots-transparent-01.png);
+		&.current {background-image: url(#{$img}dice-dots-white-01.png);}
+	}
+
+	.field-2 {
+		background-image: url(#{$img}dice-dots-transparent-02.png);
+		&.current {background-image: url(#{$img}dice-dots-white-02.png);}
+	}
+
+	.field-3 {
+		background-image: url(#{$img}dice-dots-transparent-03.png);
+		&.current {background-image: url(#{$img}dice-dots-white-03.png);}
+	}
+
+	.field-4 {
+		background-image: url(#{$img}dice-dots-transparent-04.png);
+		&.current {background-image: url(#{$img}dice-dots-white-04.png);}
+	}
+
+	.field-5 {
+		background-image: url(#{$img}dice-dots-transparent-05.png);
+		&.current {background-image: url(#{$img}dice-dots-white-05.png);}
+	}
+
+	.field-6 {
+		background-image: url(#{$img}dice-dots-transparent-06.png);
+		&.current {background-image: url(#{$img}dice-dots-white-06.png);}
+	}
+}
+
+.fields-first-row {
+	.field-1,
+	.field-2,
+	.field-3,
+	.field-4,
+	.field-5,
+	.field-6 {
+		width: 58px;
+		background-color: $main1-bg2;
+
+		.chart-left{background-color: $main1-bg3;}
+		.chart-right{background-color: $main1-bg4;}
+		&.current {background-color: $main1-bg1;}
+	}
+}
+
+.fields-second-row {
+	.field-1,
+	.field-2,
+	.field-3,
+	.field-4,
+	.field-5,
+	.field-6 {
+		width: 58px;
+		background-color: $main2-bg2;
+
+		.chart-left{background-color: $main2-bg3;}
+		.chart-right{background-color: $main2-bg4;}
+		&.current {background-color: $main2-bg1;}
+	}
+}
+
+.fields-third-row,
+.fields-fourth-row {
+	.field-1,
+	.field-2,
+	.field-3,
+	.field-4,
+	.field-5,
+	.field-6 {
+		background-color: $main3-bg2;
+		color: #fff;
+
+		.chart-left{background-color: $main3-bg3;}
+		.chart-right{background-color: $main3-bg4;}
+		&.current {
+			background-color: $main3-bg1;
+			color: #41413c;
+		}
+	}
+}
+
+.fields-third-row {
+	.field-1,
+	.field-2,
+	.field-3,
+	.field-4,
+	.field-5,
+	.field-6 {
+		width: 118px;
+	}
+}
+
+.fields-fourth-row {
+	.field-1,
+	.field-2,
+	.field-3,
+	.field-4,
+	.field-5,
+	.field-6 {
+		width: 70px;
+	}
+}
+
+
+
+.cells {
+    position: relative;
+	width: 362px;
+    bottom: 242px;
+    left: 0;
+    //padding: 2px;
+	display: inline-block;
+
+	.cell {
+		margin: 0px;
+		width: 38px;
+		height: 38px;
+		display: inline-block;
+		position: absolute;
+	}
+
+}
+
+#cell-first00,
+#cell-first01,
+#cell-first02,
+#cell-first03,
+#cell-first04,
+#cell-first05,
+#cell-first06,
+#cell-first07,
+#cell-first08,
+#cell-first09,
+#cell-first10,
+#cell-first11,
+#cell-first12 {
+	top: 13px;
+}
+
+#cell-first1x,
+#cell-first13,
+#cell-first14,
+#cell-first15,
+#cell-first16,
+#cell-first17,
+#cell-first18,
+#cell-first19,
+#cell-first20,
+#cell-first21,
+#cell-first22,
+#cell-first23,
+#cell-first24 {
+	top: 43px;
+}
+
+
+#cell-second00,
+#cell-second01,
+#cell-second02,
+#cell-second03,
+#cell-second04,
+#cell-second05,
+#cell-second06,
+#cell-second07,
+#cell-second08,
+#cell-second09,
+#cell-second10,
+#cell-second11,
+#cell-second12 {
+	top: 73px;
+}
+
+
+#cell-second1x,
+#cell-second13,
+#cell-second14,
+#cell-second15,
+#cell-second16,
+#cell-second17,
+#cell-second18,
+#cell-second19,
+#cell-second20,
+#cell-second21,
+#cell-second22,
+#cell-second23,
+#cell-second24 {
+	top: 103px;
+}
+
+#cell-first00,
+#cell-first1x,
+#cell-second00,
+#cell-second1x {
+	left: -18px;
+}
+
+#cell-first01,
+#cell-first13,
+#cell-second01,
+#cell-second13 {
+	left: 12px;
+}
+
+#cell-first02,
+#cell-first14,
+#cell-second02,
+#cell-second14 {
+	left: 42px;
+}
+
+#cell-first03,
+#cell-first15,
+#cell-second03,
+#cell-second15 {
+	left: 72px;
+}
+
+#cell-first04,
+#cell-first16,
+#cell-second04,
+#cell-second16 {
+	left: 102px;
+}
+
+#cell-first05,
+#cell-first17,
+#cell-second05,
+#cell-second17 {
+	left: 132px;
+}
+
+#cell-first06,
+#cell-first18,
+#cell-second06,
+#cell-second18 {
+	left: 162px;
+}
+
+#cell-first07,
+#cell-first19,
+#cell-second07,
+#cell-second19 {
+	left: 192px;
+}
+
+#cell-first08,
+#cell-first20,
+#cell-second08,
+#cell-second20 {
+	left: 222px;
+}
+
+#cell-first09,
+#cell-first21,
+#cell-second09,
+#cell-second21 {
+	left: 252px;
+}
+
+#cell-first10,
+#cell-first22,
+#cell-second10,
+#cell-second22 {
+	left: 282px;
+}
+
+#cell-first11,
+#cell-first23,
+#cell-second11,
+#cell-second23 {
+	left: 312px;
+}
+
+#cell-first12,
+#cell-first24,
+#cell-second12,
+#cell-second24 {
+	left: 342px;
+}
+
+
+
+#cell-third01,
+#cell-third02,
+#cell-third03 {
+	top: 133px;
+}
+
+#cell-third01 {left:43px}
+#cell-third02 {left:162px}
+#cell-third03 {left:283px}
+
+#cell-fourth01,
+#cell-fourth02,
+#cell-fourth03,
+#cell-fourth04,
+#cell-fourth05 {
+	top: 193px;
+}
+
+#cell-fourth01 {left:18px}
+#cell-fourth02 {left:90px}
+#cell-fourth03 {left:162px}
+#cell-fourth04 {left:234px}
+#cell-fourth05 {left:304px}
+
+
+#cell-first01,
+#cell-first03,
+#cell-first05,
+#cell-first07,
+#cell-first09,
+#cell-first11,
+#cell-second01,
+#cell-second03,
+#cell-second05,
+#cell-second07,
+#cell-second09,
+#cell-second11,
+{
+	z-index: 999;
+}
+

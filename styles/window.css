@@ -1,0 +1,192 @@
+.window {
+  width: 100%;
+  box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.4);
+  position: absolute;
+  bottom: 52px;
+  background-color: #E2E0D8;
+  z-index: 8888; }
+  .window.fullscreen {
+    height: 100%;
+    z-index: 9990;
+    bottom: 0; }
+  .window.fair-play {
+    position: initial;
+    height: 0px;
+    transition: all ease-in-out 0.3s; }
+    .window.fair-play .input #rc-spins {
+      margin-left: 60px;
+      margin-right: 60px; }
+    .window.fair-play .input #rc-shift, .window.fair-play .input #rc-spins {
+      line-height: 46px;
+      text-align: center; }
+    .window.fair-play .input .button {
+      margin: 0;
+      min-width: 56px; }
+  .window h1 {
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 0 0 10px 0; }
+  .window .window-header {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    height: 52px;
+    background-color: #282828;
+    color: #fff;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+    z-index: 9900;
+    border-bottom: solid 6px #2ec335; }
+    .window .window-header .window-title {
+      margin: 0 52px;
+      padding: 0 20px;
+      line-height: 52px;
+      text-transform: uppercase;
+      cursor: default; }
+    .window .window-header .window-action {
+      width: 52px;
+      height: 52px;
+      position: absolute;
+      right: 0px;
+      top: 0; }
+      .window .window-header .window-action .minimize {
+        width: 100%;
+        height: 100%;
+        background: url(../img/icon-minimize.png) no-repeat center;
+        opacity: 0.8;
+        cursor: pointer;
+        transition: all ease-in-out 0.3s; }
+        .window .window-header .window-action .minimize:hover {
+          opacity: 0.9; }
+        .window .window-header .window-action .minimize:active {
+          opacity: 1;
+          transform: rotate(360deg); }
+  .window .window-container {
+    text-align: center;
+    padding: 20px; }
+    .window .window-container.my-bets .my-bet {
+      font-size: 18px;
+      line-height: 52px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      display: inline-block;
+      width: 100%;
+      height: 52px; }
+      .window .window-container.my-bets .my-bet .my-bet-id {
+        display: inline-block;
+        color: rgba(0, 0, 0, 0.7);
+        opacity: 0.4;
+        width: 26px;
+        height: 52px;
+        position: absolute;
+        left: 20px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap; }
+      .window .window-container.my-bets .my-bet .my-bet-name {
+        display: inline-block;
+        color: rgba(0, 0, 0, 0.7);
+        width: 160px;
+        height: 52px;
+        position: absolute;
+        left: 60px;
+        text-align: left;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap; }
+      .window .window-container.my-bets .my-bet .my-bet-result {
+        display: inline-block;
+        color: rgba(0, 0, 0, 0.7);
+        text-align: right;
+        opacity: 0.6;
+        width: 54px;
+        height: 52px;
+        position: absolute;
+        right: 136px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; }
+      .window .window-container.my-bets .my-bet .my-bet-select {
+        display: inline-block;
+        width: 52px;
+        height: 52px;
+        position: absolute;
+        right: 82px; }
+        .window .window-container.my-bets .my-bet .my-bet-select .radio {
+          position: relative;
+          top: 10px; }
+      .window .window-container.my-bets .my-bet .my-bet-delete {
+        display: inline-block;
+        width: 52px;
+        height: 52px;
+        cursor: pointer;
+        background: url(../img/icon-delete.png) no-repeat center;
+        opacity: 0.5;
+        transition: all ease-in-out 0.3s;
+        position: absolute;
+        right: 28px; }
+        .window .window-container.my-bets .my-bet .my-bet-delete:hover {
+          opacity: 0.9; }
+    .window .window-container.payouts .fields-holder {
+      padding: 4px;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.5);
+      margin: 6px 0 16px 0;
+      background-color: white; }
+      .window .window-container.payouts .fields-holder .fields-first-row .field-1, .window .window-container.payouts .fields-holder .fields-first-row .field-2, .window .window-container.payouts .fields-holder .fields-first-row .field-3, .window .window-container.payouts .fields-holder .fields-first-row .field-4, .window .window-container.payouts .fields-holder .fields-first-row .field-5, .window .window-container.payouts .fields-holder .fields-first-row .field-6 {
+        background-color: rgba(255, 12, 6, 0.7); }
+      .window .window-container.payouts .fields-holder .fields-second-row .field-1, .window .window-container.payouts .fields-holder .fields-second-row .field-2, .window .window-container.payouts .fields-holder .fields-second-row .field-3, .window .window-container.payouts .fields-holder .fields-second-row .field-4, .window .window-container.payouts .fields-holder .fields-second-row .field-5, .window .window-container.payouts .fields-holder .fields-second-row .field-6 {
+        background-color: rgba(0, 209, 10, 0.8); }
+      .window .window-container.payouts .fields-holder .fields-third-row .field-1, .window .window-container.payouts .fields-holder .fields-third-row .field-2, .window .window-container.payouts .fields-holder .fields-third-row .field-3, .window .window-container.payouts .fields-holder .fields-third-row .field-4, .window .window-container.payouts .fields-holder .fields-third-row .field-5, .window .window-container.payouts .fields-holder .fields-fourth-row .field-1, .window .window-container.payouts .fields-holder .fields-fourth-row .field-2, .window .window-container.payouts .fields-holder .fields-fourth-row .field-3, .window .window-container.payouts .fields-holder .fields-fourth-row .field-4, .window .window-container.payouts .fields-holder .fields-fourth-row .field-5 {
+        background-color: rgba(255, 224, 130, 0.6);
+        color: rgba(0, 0, 0, 0.7); }
+      .window .window-container.payouts .fields-holder .chip-hint-icon {
+        width: 34px;
+        height: 34px;
+        line-height: 34px;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        background: url(../img/chip-texture.png) no-repeat center;
+        background-size: 110%;
+        background-color: #2ec335;
+        margin: 2px;
+        border: none; }
+    .window .window-container.themes {
+      padding-right: 0px; }
+      .window .window-container.themes .theme-icon {
+        width: 170px;
+        height: 170px;
+        position: relative;
+        display: inline-block;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 0px 20px 20px 0px; }
+        .window .window-container.themes .theme-icon .theme-title {
+          background-color: rgba(0, 0, 0, 0.5);
+          width: 154px;
+          font-size: 14px;
+          line-height: 26px;
+          text-align: left;
+          padding: 0px 8px;
+          color: white;
+          font-weight: bold;
+          position: absolute;
+          bottom: 0px; }
+        .window .window-container.themes .theme-icon .theme-status.current, .window .window-container.themes .theme-icon .theme-status.locked {
+          height: 32px;
+          width: 32px;
+          border-radius: 100%;
+          position: absolute;
+          right: 10px;
+          bottom: 10px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); }
+        .window .window-container.themes .theme-icon .theme-status.current {
+          background: url(../img/icon-ok.png) no-repeat center;
+          background-color: #7CB342;
+          background-size: 60%; }
+        .window .window-container.themes .theme-icon .theme-status.locked {
+          background: url(../img/icon-locked.png) no-repeat center;
+          background-color: #FFCA28;
+          background-size: 60%; }

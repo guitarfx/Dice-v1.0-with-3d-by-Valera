@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        <title>Dice 3D</title>
+        <style>
+            html, body {
+                width: 100%;
+                height: 100%;
+                margin:0;
+                padding:0;
+                overflow: hidden;
+				  overflow-x: hidden;
+                  overflow-y: hidden;
+                  background:  rgba(38,110,38,0.01);
+            }
+			
+.wrapper {
+  position: relative;
+  min-height: 100%;
+}
+.content {
+  padding-bottom: 1px;
+  background:  rgba(0,0,255,0.0001); /*(38,110,38);*/ /* 41-118-41  #C7E304;*/ /* Цвет фона */
+  height: calc(100vh - 33.15vw );
+}
+.footer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 10.25vw;
+  background: #C7E3E4; /* Цвет фона */
+  /* max-height: 10vh; */
+}
+
+.header {
+  position: relative;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 10.25vw;
+  /*background: #C7E3E4;*/ /* Цвет фона */
+  background: rgb(55,55,55);
+}
+
+   .rightpic {
+   
+    /* max-height: 10vh; */
+   
+    /*left: 0;*/
+    /*bottom: calc( 10.25vw +  (100vw - 4*102/62*10.25vw*1.4)/2   );*/
+	/*position: absolute;*/
+    /*float: right; */  /* Выравнивание по правому краю */
+    /*margin: 0 0 0 0;*/ /* Отступы вокруг фотографии */
+	
+	margin-left: calc(   (100vw -  4*102/62*10.25vw*1.4)/5     );
+	margin-right: 0;
+	/*margin-bottom: calc(   (100vw -  4*102/62*10.25vw*1.4)/5   + 10.25vw  );*/
+	
+	margin-bottom: 0;
+	display:none;  /*--- show footer bottons ---*/
+	
+   }
+
+   
+table {
+        background:green;
+        border-radius: 10px 10px 0 0;
+        border-spacing:2px;
+		width: calc( 100vw - 20.5vw ); /* Ширина таблицы в процентах */
+}
+td {
+        padding:5px;
+        background:#FFCC99;
+        border: solid 1px rgba(41,118,41,0.3);
+		vertical-align:middle;
+		text-align: center;
+}
+td.tleft {
+        border-radius: 5px 5px 0 0;
+        
+}
+td.tcenter {
+        border-radius: 5px;
+		background:rgb(95,88,31);
+		color: white; 
+		text-align: center;
+        
+}
+td.bcenter      {
+        
+    border-radius: 5px;
+	background:rgb(31,88,95);
+	color: white;
+	text-align: center;
+}   
+
+
+#parent1 { 
+     display: table;
+	 text-align: center;
+}
+
+#child1 {
+    display: table-cell;
+    vertical-align: middle;
+	font-family: Arial; 
+	font-size: calc( 3.7vw ); 
+	color: grey;
+	overflow: hidden;
+	white-space: nowrap;
+	/*font-weight: bold;*/
+	background:rgb(55,55,55);
+	text-overflow: ellipsis;
+}
+   
+.truncate {
+  width: 40.25vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}   
+			
+			
+			
+        </style>
+    </head>
+    <body>
+	
+<!--	
+//--------------------------------- full screen ----------------------
+-->
+<!--
+<div id="fs-container">
+  <div class="fs_section" id="fs_section_img">
+  <div id="i1"><button onclick="enterFullscreen('fs_section_img')">1 Toggle iframe content fullscreen</button></div>
+  <br>
+  <div id="i22" style=""></div>
+  <br>
+  <div id="i3"></div>
+ </div>
+</div>
+-->
+
+
+
+<script>
+/*
+document.cancelFullScreen = document.cancelFullScreen || document.webkitCancelFullScreen ||      document.mozCancelFullScreen;
+function onFullScreenEnter() {
+console.log("Enter fullscreen initiated from iframe");
+};
+function onFullScreenExit() {
+console.log("Exit fullscreen initiated from iframe");
+};
+// Note: FF nightly needs about:config full-screen-api.enabled set to true.
+function enterFullscreen(id) {
+onFullScreenEnter(id);
+var el =  document.getElementById(id);
+var onfullscreenchange =  function(e){
+var fullscreenElement = document.fullscreenElement || document.mozFullscreenElement || document.webkitFullscreenElement;
+var fullscreenEnabled = document.fullscreenEnabled || document.mozFullscreenEnabled || document.webkitFullscreenEnabled;
+console.log( 'fullscreenEnabled = ' + fullscreenEnabled, ',  fullscreenElement = ', fullscreenElement, ',  e = ', e);
+}
+el.addEventListener("webkitfullscreenchange", onfullscreenchange);
+el.addEventListener("mozfullscreenchange",     onfullscreenchange);
+el.addEventListener("fullscreenchange",             onfullscreenchange);
+if (el.webkitRequestFullScreen) {
+el.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+} else {
+el.mozRequestFullScreen();
+}
+document.querySelector('#'+id + ' button').onclick = function(){
+exitFullscreen(id);
+}
+}
+function exitFullscreen(id) {
+onFullScreenExit(id);
+document.cancelFullScreen();
+document.querySelector('#'+id + ' button').onclick = function(){
+enterFullscreen(id);
+}
+}
+*/
+</script>
+	
+
+
+	
+	
+  <script src="libs1/Three.js"></script>     <!-- 69 version -->
+  <script src="libs1/Detector.js"></script>
+  <script src="build/cannon.js"></script>
+
+		
+			
+	
+		
+    <script>
+
+        var world;
+        var dt = 1 / 60 * 1.05;
+
+        var constraintDown = false;
+        var camera, scene, renderer, gplane=false, clickMarker=false;
+        var geometry, material, mesh;
+        var controls,time = Date.now();
+
+        var jointBody, constrainedBody, mouseConstraint;
+
+        var N = 1+1; // chislo kubov ------------------------------------------ http://matthiasschuetz.com/three-basicthirdpersongame/docs.php
+		var in_work = 0;
+
+        var container, camera, scene, renderer, projector;
+
+        // To be synced
+        var meshes=[], bodies=[], history_data_red=[], history_data_blue=[];
+		history_data_red.push("*"); 
+		history_data_blue.push("*");
+		
+		var redcube_working = 0;
+		var bluecube_working = 0;
+		var	reds  = "*";
+		var	blues = "*";
+		
+		
+
+
+        // Initialize Three.js
+        if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+		
+//        initCannon();
+//        init();
+//        animate();
+
+        function init() {
+
+            projector = new THREE.Projector();
+
+            //container = document.createElement( 'div' );
+            //document.body.appendChild( container );
+			
+			container = document.getElementById('i2'); // i2 //------------------------------------------ CONTAINER ---------
+
+            // scene
+            scene = new THREE.Scene();
+            scene.fog = new THREE.Fog( 0x000000, 500, 10000 );
+
+            // camera
+            camera = new THREE.PerspectiveCamera( 30-10, container.offsetWidth / container.offsetHeight, 0.5, 10000 );
+            camera.position.set(10, 10+5+5, -30); // 10-2-0  0
+            
+			
+			//camera.quaternion.setFromAxisAngle(new THREE.Vector3(0,1,0), Math.PI/2);
+			
+			camera.lookAt(new THREE.Vector3(0, 0+5+3-3,  0));
+			
+            scene.add(camera);
+			
+			/*
+			
+			    https://cdnjs.cloudflare.com/ajax/libs/three.js/r72/three.min.js
+				https://rawgithub.com/mrdoob/three.js/master/build/three.js
+			
+			    camera.position.x = 120;
+                camera.position.y = 60;
+                camera.position.z = 180;
+			
+			    var x = 10+( 100*(Math.sin(step)));
+                camera.lookAt(new THREE.Vector3(x,10,0));
+                lookAtMesh.position=new THREE.Vector3(x,10,0);
+			
+			*/
+			
+
+            // lights
+            var light, materials;
+            scene.add( new THREE.AmbientLight( 0x666666 ) );
+
+            light = new THREE.DirectionalLight( 0xffffff, 1.75 ); // ( 0xffffff, 1.75 );
+            var d = 20;
+
+            light.position.set( d, d+10+5+5+5, d );
+
+            light.castShadow = true;
+            //light.shadowCameraVisible = true;
+
+            light.shadowMapWidth = 1024;
+            light.shadowMapHeight = 1024;
+
+            light.shadowCameraLeft = -d;
+            light.shadowCameraRight = d;
+            light.shadowCameraTop = d;
+            light.shadowCameraBottom = -d;
+
+            light.shadowCameraFar = 3*d;
+            light.shadowCameraNear = d;
+            light.shadowDarkness = 0.5;
+
+            scene.add( light );
+
+            // floor
+            geometry = new THREE.PlaneGeometry( 100, 100, 1, 1 );
+            //geometry.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI / 2 ) );
+			
+			//var color = new THREE.Color( rgba(188, 141, 190, 1) );
+			//alert(color.getHex()); // Math.random() * 0xffffff
+            material = //new THREE.MeshLambertMaterial( { color: 0x003000 } ); //------------------------- COLOR ---- 0x777777 ---------
+//			           new THREE.MeshPhongMaterial (  { map: THREE.ImageUtils.loadTexture( 'green-62-62.png' ) });
+//			           new THREE.MeshPhongMaterial (  { map: THREE.ImageUtils.loadTexture( 'roulette-table_0.jpg' ) }); //table.jpg
+//			           new THREE.MeshPhongMaterial (  { map: THREE.ImageUtils.loadTexture( 'table_new.jpg' ) }); //table.jpg
+
+//			           new THREE.MeshPhongMaterial (  { map: THREE.ImageUtils.loadTexture( 'table_new8a.jpg' ) });//green-62-62.png
+			           new THREE.MeshPhongMaterial (  { map: THREE.ImageUtils.loadTexture( 'img/gray.png' ) });//green-62-62.png
+					   
+					   
+//			           new THREE.MeshPhongMaterial (  { map: THREE.ImageUtils.loadTexture( 'table_new8-0.jpg' ) }); //table.jpg
+//			           new THREE.MeshPhongMaterial (  { map: THREE.ImageUtils.loadTexture( 'table_new_black.jpg' ) }); //table.jpg
+//			           new THREE.MeshPhongMaterial (  { map: THREE.ImageUtils.loadTexture( 'table_new1.jpg' ) }); //table.jpg
+			
+			
+            markerMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
+            //THREE.ColorUtils.adjustHSV( material.color, 0, 0, 0.9 );
+            mesh = new THREE.Mesh( geometry, material );
+            mesh.castShadow = true;
+            mesh.quaternion.setFromAxisAngle(new THREE.Vector3(1,0,0), -Math.PI / 2);
+            mesh.receiveShadow = true;
+            scene.add(mesh);
+
+            // cubes ------------------------------------------------------------------------------------
+            var cubeGeo = new THREE.BoxGeometry( 1+0.5, 1+0.5, 1+0.5, 10, 10 ); //--- was 1 1 1
+            var cubeMaterial = new THREE.MeshPhongMaterial( { color: 0x888888 } );
+			
+			material2 = new THREE.MeshFaceMaterial([
+			    new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/1-blue-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/6-blue-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/5-blue-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/2-blue-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/4-blue-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/3-blue-324.png' ) })
+            ]);
+
+			material3 = new THREE.MeshFaceMaterial([
+			    new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/1-red-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/6-red-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/5-red-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/2-red-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/4-red-324.png' ) }),
+	            new THREE.MeshPhongMaterial(  { map: THREE.ImageUtils.loadTexture( 'img/3-red-324.png' ) })
+            ]);
+
+
+			
+			//---------------------------------------------------------------- dopablyaem cubes ---------------------
+            for(var i=0; i<N; i++){
+              //cubeMesh = new THREE.Mesh(cubeGeo, cubeMaterial);
+			  if(i==0){
+				        cubeMesh = new THREE.Mesh(cubeGeo, material2);
+				}else{
+				        cubeMesh = new THREE.Mesh(cubeGeo, material3);
+				}
+                cubeMesh.castShadow = true;
+                meshes.push(cubeMesh);
+                scene.add(cubeMesh);
+            }
+
+			
+			//cubeMesh2 = new THREE.Mesh(cubeGeo, material3);
+            //cubeMesh2.castShadow = true;
+            //meshes.push(cubeMesh);//------- ???
+            //scene.add(cubeMesh2);
+
+			
+			
+            renderer = new THREE.WebGLRenderer( { antialias: true } );
+			
+          //renderer.setSize( window.innerWidth/2, window.innerHeight/2 );   //----- RAZMER SCENI --------------------- SIZE --------
+		  //alert(container.offsetHeight);
+            renderer.setSize( container.offsetWidth/1.0, container.offsetHeight/1.0 ); //----- RAZMER SCENI ------1.41----1.41------- SIZE --------
+			
+			
+            renderer.setClearColor( scene.fog.color );
+
+            container.appendChild( renderer.domElement );
+
+            renderer.gammaInput = true;
+            renderer.gammaOutput = true;
+            renderer.shadowMapEnabled = true;
+
+            window.addEventListener( 'resize', onWindowResize, false );
+
+            //window.addEventListener("mousemove", onMouseMove, false );
+            //window.addEventListener("mousedown", onMouseDown, false );
+            //window.addEventListener("mouseup", onMouseUp, false );
+        }
+
+        function setClickMarker(x,y,z) {
+            if(!clickMarker){
+                var shape = new THREE.SphereGeometry(0.2, 8, 8);
+                clickMarker = new THREE.Mesh(shape, markerMaterial);
+                scene.add(clickMarker);
+            }
+            clickMarker.visible = true;
+            clickMarker.position.set(x,y,z);
+        }
+
+        function removeClickMarker(){
+          clickMarker.visible = false;
+        }
+
+        function onMouseMove(e){
+            // Move and project on the plane
+            if (gplane && mouseConstraint) {
+                var pos = projectOntoPlane(e.clientX,e.clientY,gplane,camera);
+                if(pos){
+                    setClickMarker(pos.x,pos.y,pos.z,scene);
+                    moveJointToPoint(pos.x,pos.y,pos.z);
+                }
+            }
+        }
+
+        function onMouseDown(e){
+		    
+            // Find mesh from a ray
+            var entity = findNearestIntersectingObject(e.clientX,e.clientY,camera,meshes);
+            var pos = entity.point;
+            if(pos && entity.object.geometry instanceof THREE.BoxGeometry){
+                constraintDown = true;
+                // Set marker on contact point
+                setClickMarker(pos.x,pos.y,pos.z,scene);
+
+                // Set the movement plane
+                setScreenPerpCenter(pos,camera);
+
+                var idx = meshes.indexOf(entity.object);
+                if(idx !== -1){
+                    addMouseConstraint(pos.x,pos.y,pos.z,bodies[idx]);
+                }
+            }
+        }
+
+        // This function creates a virtual movement plane for the mouseJoint to move in
+        function setScreenPerpCenter(point, camera) {
+            // If it does not exist, create a new one
+            if(!gplane) {
+              var planeGeo = new THREE.PlaneGeometry(100,100);
+              var plane = gplane = new THREE.Mesh(planeGeo,material);
+              plane.visible = false; // Hide it..
+              scene.add(gplane);
+            }
+
+            // Center at mouse position
+            gplane.position.copy(point);
+
+            // Make it face toward the camera
+            gplane.quaternion.copy(camera.quaternion);
+        }
+
+		//--------------------------------------------------------------- MOUSE UP ----------------------------
+        function onMouseUp(e) {
+          constraintDown = false;
+          // remove the marker
+          removeClickMarker();
+
+          // Send the remove mouse joint to server
+          removeJointConstraint();
+		  
+		  //--------------------------------------------- GRAVI ------------------
+		  //world.gravity.set(0,-10,0);
+		  //boxBody.velocity.set(0, -1, +1*0.25);
+		  
+        }
+
+		
+		
+        var lastx,lasty,last;
+        function projectOntoPlane(screenX,screenY,thePlane,camera) {
+            var x = screenX;
+            var y = screenY;
+            var now = new Date().getTime();
+            // project mouse to that plane
+            var hit = findNearestIntersectingObject(screenX,screenY,camera,[thePlane]);
+            lastx = x;
+            lasty = y;
+            last = now;
+            if(hit)
+                return hit.point;
+            return false;
+        }
+        function findNearestIntersectingObject(clientX,clientY,camera,objects) {
+            // Get the picking ray from the point
+            var raycaster = getRayCasterFromScreenCoord(clientX, clientY, camera, projector);
+
+            // Find the closest intersecting object
+            // Now, cast the ray all render objects in the scene to see if they collide. Take the closest one.
+            var hits = raycaster.intersectObjects(objects);
+            var closest = false;
+            if (hits.length > 0) {
+                closest = hits[0];
+            }
+
+            return closest;
+        }
+
+        // Function that returns a raycaster to use to find intersecting objects
+        // in a scene given screen pos and a camera, and a projector
+        function getRayCasterFromScreenCoord (screenX, screenY, camera, projector) {
+            var mouse3D = new THREE.Vector3();
+            // Get 3D point form the client x y
+            mouse3D.x = (screenX / window.innerWidth) * 2 - 1;
+            mouse3D.y = -(screenY / window.innerHeight) * 2 + 1;
+            mouse3D.z = 0.5;
+            return projector.pickingRay(mouse3D, camera);
+        }
+
+		//----------------------------------------------------------------------------------------------------  win resize ----
+        function onWindowResize() {
+            camera.aspect = container.offsetWidth / container.offsetHeight;   //window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            //controls.handleResize();
+            renderer.setSize( container.offsetWidth, container.offsetHeight );
+        }
+
+        function animate() {
+            requestAnimationFrame( animate );
+            //controls.update();
+			if(in_work==1){
+				updatePhysics();
+				render();
+			};	
+        }
+
+        function updatePhysics(){
+            world.step(dt);
+            for(var i=0; i !== meshes.length; i++){
+                meshes[i].position.copy(bodies[i].position);
+                meshes[i].quaternion.copy(bodies[i].quaternion);
+            }
+        }
+
+		//---------------------------------------------------------====================== RENDER ====================
+        function render() {
+            renderer.render(scene, camera);
+			
+			var v1 = new THREE.Vector3(1,0,0); 
+			v1.applyMatrix4(meshes[0].matrixWorld);
+			
+			var v2 = new THREE.Vector3(0,1,0);
+            v2.applyMatrix4(meshes[0].matrixWorld);
+			
+			var v3 = new THREE.Vector3(0,0,1);
+            v3.applyMatrix4(meshes[0].matrixWorld);
+
+			
+
+
+			var v11 = new THREE.Vector3(1,0,0); 
+			v11.applyMatrix4(meshes[1].matrixWorld);
+			
+			var v22 = new THREE.Vector3(0,1,0);
+            v22.applyMatrix4(meshes[1].matrixWorld);
+			
+			var v33 = new THREE.Vector3(0,0,1);
+            v33.applyMatrix4(meshes[1].matrixWorld);
+
+
+
+			
+			
+			//if(v1.y>perc) helper.style.backgroundColor='red';        
+            //if(v1.y<-perc) helper.style.backgroundColor='green';      
+
+            var table=document.getElementById("t");
+			
+			//if( v1.y>0.9) table.rows[0].cells[2].style.backgroundColor = 'grey';
+			//if(v1.y<-0.9) table.rows[0].cells[2].style.backgroundColor = 'red';
+
+			
+        //  table.rows[0].cells[2].innerHTML = "" + meshes[1].position.y.toFixed(2);
+		
+			//table.rows[1].cells[2].innerHTML = "" + v1.y.toFixed(2);
+			//table.rows[1].cells[3].innerHTML = "" + v2.y.toFixed(2);
+			//table.rows[1].cells[4].innerHTML = "" + v3.y.toFixed(2);
+			
+			reds  = "*";
+			blues = "*";
+			if((v1.y.toFixed(2) ==  "0.75")&&(v2.y.toFixed(2) == "-0.25")&&(v3.y.toFixed(2) == "0.75")) blues = "4";
+	        if((v1.y.toFixed(2) ==  "0.75")&&(v2.y.toFixed(2) ==  "1.75")&&(v3.y.toFixed(2) == "0.75")) blues = "3";
+	        if((v1.y.toFixed(2) == "-0.25")&&(v2.y.toFixed(2) ==  "0.75")&&(v3.y.toFixed(2) == "0.75")) blues = "2";
+	        if((v1.y.toFixed(2) ==  "1.75")&&(v2.y.toFixed(2) ==  "0.75")&&(v3.y.toFixed(2) == "0.75")) blues = "1";
+	        if((v1.y.toFixed(2) ==  "0.75")&&(v2.y.toFixed(2) ==  "0.75")&&(v3.y.toFixed(2) == "1.75")) blues = "5";
+	        if((v1.y.toFixed(2) ==  "0.75")&&(v2.y.toFixed(2) ==  "0.75")&&(v3.y.toFixed(2) == "-0.25")) blues = "6";
+	
+            //table.rows[1].cells[0].innerHTML = blues;
+	
+			//table.rows[0].cells[2].innerHTML = "" + v11.y.toFixed(2);
+			//table.rows[0].cells[3].innerHTML = "" + v22.y.toFixed(2);
+			//table.rows[0].cells[4].innerHTML = "" + v33.y.toFixed(2);
+			
+			if((v11.y.toFixed(2) ==  "0.75")&&(v22.y.toFixed(2) == "-0.25")&&(v33.y.toFixed(2) == "0.75")) reds = "4";
+	        if((v11.y.toFixed(2) ==  "0.75")&&(v22.y.toFixed(2) ==  "1.75")&&(v33.y.toFixed(2) == "0.75")) reds = "3";
+	        if((v11.y.toFixed(2) == "-0.25")&&(v22.y.toFixed(2) ==  "0.75")&&(v33.y.toFixed(2) == "0.75")) reds = "2";
+	        if((v11.y.toFixed(2) ==  "1.75")&&(v22.y.toFixed(2) ==  "0.75")&&(v33.y.toFixed(2) == "0.75")) reds = "1";
+	        if((v11.y.toFixed(2) ==  "0.75")&&(v22.y.toFixed(2) ==  "0.75")&&(v33.y.toFixed(2) == "1.75")) reds = "5";
+	        if((v11.y.toFixed(2) ==  "0.75")&&(v22.y.toFixed(2) ==  "0.75")&&(v33.y.toFixed(2) == "-0.25")) reds = "6";
+
+			if(   (reds != "*") && (blues != "*")   )
+			{
+			       table.rows[1].cells[0].innerHTML = blues;
+                   table.rows[0].cells[0].innerHTML = reds;
+				   in_work=0;
+			}
+	
+		//--- red	
+		//  table.rows[0].cells[2].innerHTML = "" + meshes[1].rotation.x.toFixed(2);
+		//	table.rows[0].cells[3].innerHTML = "" + meshes[1].rotation.y.toFixed(2);
+		//	table.rows[0].cells[4].innerHTML = "" + meshes[1].rotation.z.toFixed(2);
+
+			
+        } //--------------------------------------------  end of render -----------------
+		
+		
+		
+
+        function initCannon(){
+            // Setup our world
+            world = new CANNON.World();
+            world.quatNormalizeSkip = 0;
+            world.quatNormalizeFast = false;
+
+			//-------------------------------------------- GRAVITATSYA ---------------------------
+            //world.gravity.set(0,-10,0);
+			
+			
+            world.broadphase = new CANNON.NaiveBroadphase();
+
+            // Create boxes
+            var mass = 5, radius = 1.3;
+            boxShape = new CANNON.Box(new CANNON.Vec3(0.5+0.25,   0.5+0.25,   0.5+0.25));
+            for(var i=0; i<N; i++){
+                boxBody = new CANNON.Body({ mass: mass });
+                boxBody.addShape(boxShape);
+				
+				
+				if(i==0){				
+                            boxBody.position.set(0+2-0.5 -i*(2.5+0.7),  5+3+0.4,  0); //---------------------- POLOZENIE BOX -----------
+						}else{
+						    boxBody.position.set(0+2-0.5 -i*(2.5+0.7),  5+3,  0); //---------------------- POLOZENIE BOX -----------
+						}
+								
+				
+				//---------------------------------------- zakrutit kubik tut !!! -----------------
+				if(i==0){
+				           boxBody.angularVelocity.set(3.7,-4.35,-3.9);
+						}else{
+						   boxBody.angularVelocity.set(-3.117,-4.35-1,3.2229);
+						}
+				//boxBody.angularVelocity.z = 1;
+				
+				if(i==0){
+				           // boxBody.velocity.set(0-1, 0, -1+1); //------------- *,-Y,* - VNIZ, 1-VDAL -------- skorosttela ---------------
+						}else{
+						  //  boxBody.velocity.set(1, 0, -1+1);
+                        }						
+				
+				//body.position.set(x, y, z);
+                //body.quaternion.set(a, b, c, w);
+                //body.velocity.set(0, 0, 0);
+                //body.angularVelocity.set(0, 0, 0);
+				
+                world.addBody(boxBody);
+                bodies.push(boxBody);
+            }
+
+            // Create a plane
+            var groundShape = new CANNON.Plane();
+            var groundBody = new CANNON.Body({ mass: 0 });
+            groundBody.addShape(groundShape);
+            groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0),-Math.PI/2);
+            world.addBody(groundBody);
+
+            // Joint body
+            var shape = new CANNON.Sphere(0.1);
+            jointBody = new CANNON.Body({ mass: 0 });
+            jointBody.addShape(shape);
+            jointBody.collisionFilterGroup = 0;
+            jointBody.collisionFilterMask = 0;
+            world.addBody(jointBody)
+        }
+
+        function addMouseConstraint(x,y,z,body) {
+          // The cannon body constrained by the mouse joint
+          constrainedBody = body;
+
+          // Vector to the clicked point, relative to the body
+          var v1 = new CANNON.Vec3(x,y,z).vsub(constrainedBody.position);
+
+          // Apply anti-quaternion to vector to tranform it into the local body coordinate system
+          var antiRot = constrainedBody.quaternion.inverse();
+          pivot = antiRot.vmult(v1); // pivot is not in local body coordinates
+
+          // Move the cannon click marker particle to the click position
+          jointBody.position.set(x,y,z);
+
+          // Create a new constraint
+          // The pivot for the jointBody is zero
+          mouseConstraint = new CANNON.PointToPointConstraint(constrainedBody, pivot, jointBody, new CANNON.Vec3(0,0,0));
+
+          // Add the constriant to world
+          world.addConstraint(mouseConstraint);
+        }
+
+        // This functions moves the transparent joint body to a new postion in space
+        function moveJointToPoint(x,y,z) {
+            // Move the joint body to a new position
+            jointBody.position.set(x,y,z);
+            mouseConstraint.update();
+        }
+
+        function removeJointConstraint(){
+          // Remove constriant from world
+          world.removeConstraint(mouseConstraint);
+          mouseConstraint = false;
+        }
+		
+
+/*		
+function receiveMessage(event)
+{
+  alert(event.data);
+}
+addEventListener("message", receiveMessage, false);
+console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ seted up message receiver");	
+parent.postMessage("This is a message", "*");	
+*/		
+
+        function ROLL(){
+		
+			console.log("clicked on ROLL in iframe real3d.html");
+		   
+	        //--------------------------------------------- GRAVI ------------------
+		    if(world.gravity.y == 0){
+		       world.gravity.set(0,-10,0);
+		       boxBody.velocity.set(0, -1, +1*0.25);
+			   
+			   bodies[0].velocity.set(-2, 0, 5);
+			   bodies[1].velocity.set(-1, 0, 2); // 0, 15, 0
+			   
+			 }else{
+			 
+			   bodies[0].position.set(0+2-0.5 -0*(2.5+0.7),  5+3+0.4,  0);
+			   bodies[1].position.set(0+2-0.5 -1*(2.5+0.7),  5+3,  0);
+			   
+		   
+			   //bodies[0].velocity.set(0, 15, 0);
+			   //bodies[1].velocity.set(0, 15, 0);
+			   bodies[0].velocity.set(-2, 0, 5);
+			   bodies[1].velocity.set(-1, 0, 2); // 0, 15, 0
+			   
+			   
+			   bodies[0].angularVelocity.set(3.7,-4.35,-3.9);
+			   bodies[1].angularVelocity.set(-3.117,-4.35-1,3.2229);
+			   
+			   
+			 };
+
+
+ 			 //history_data_red.push(reds); 
+			 //history_data_blue.push(blues);
+			 
+			 var table=document.getElementById("t");
+			 
+             var tmp = 0;
+			 if((reds!="*")&&(blues!="*"))
+			 { 
+			    tmp = 1; 
+				history_data_red.push(reds); 
+			    history_data_blue.push(blues);
+			};
+			 
+			 reds = "*"; blues = "*"; 
+			// var table=document.getElementById("t");
+			 table.rows[1].cells[0].innerHTML = blues; 
+			 table.rows[0].cells[0].innerHTML = reds;
+
+             var i = 0;
+			 var _i = 0;
+			 for(_i=1; (_i < history_data_red.length)&&(tmp==1); _i++){
+			    if(_i > 5)break;
+			    try{
+						//console.log("_i",_i);
+						table.rows[0].cells[_i].innerHTML = history_data_red[ history_data_red.length-_i];
+						table.rows[1].cells[_i].innerHTML = history_data_blue[history_data_red.length-_i];
+				} catch(e) {
+	                    console.log("error in 3d",e);
+				};		
+			 }//------ end of for ---------------
+
+			in_work = 1; 
+			 
+        }
+
+
+
+		
+		
+		
+        function ROLL1(reds1,blues1){
+		
+	        red_str = ""+ reds1 + ""  + blues1;  
+			console.log("~~~~~~~~~~~~~~~~~~~ START ROLL1 ~~~~~~~~~~", reds1,blues1,red_str);
+			
+		    world.gravity.set(0,-10,0);
+			bodies[0].velocity.set(-2, 0, 5);
+			bodies[1].velocity.set(-1, 0, 2); // 0, 15, 0
+			
+			var x=0; var y=0; var z=0; var w=0;
+
+          //--- position ---			
+			x = body_RED[red_str]["position"].x; y = body_RED[red_str]["position"].y; z = body_RED[red_str]["position"].z;
+			bodies[0].position.set( x, y, z );
+			x = body_BLUE[red_str]["position"].x; y = body_BLUE[red_str]["position"].y; z = body_BLUE[red_str]["position"].z;
+			bodies[1].position.set( x, y, z );
+
+		  //--- angularVelocities ---	
+  			x = body_RED[red_str]["angularVelocity"].x; y = body_RED[red_str]["angularVelocity"].y; z = body_RED[red_str]["angularVelocity"].z;
+		    bodies[0].angularVelocity.set(x,y,z);
+  			x = body_BLUE[red_str]["angularVelocity"].x; y = body_BLUE[red_str]["angularVelocity"].y; z = body_BLUE[red_str]["angularVelocity"].z;
+			bodies[1].angularVelocity.set(x,y,z);
+
+		  //--- quaternion ---	
+		    x = body_RED[red_str]["quaternion"].x; y = body_RED[red_str]["quaternion"].y; z = body_RED[red_str]["quaternion"].z;
+			w = body_RED[red_str]["quaternion"].w;
+			bodies[0].quaternion.set(x,y,z,w);
+
+		    x = body_BLUE[red_str]["quaternion"].x; y = body_BLUE[red_str]["quaternion"].y; z = body_BLUE[red_str]["quaternion"].z;
+			w = body_BLUE[red_str]["quaternion"].w;
+			bodies[1].quaternion.set(x,y,z,w);
+			
+			 
+			 var table=document.getElementById("t");
+			 
+             var tmp = 0;
+			 if((reds!="*")&&(blues!="*"))
+			 { 
+			    tmp = 1; 
+				history_data_red.push(reds); 
+			    history_data_blue.push(blues);
+			};
+			 
+			console.log("reds = ",reds," blues = ", blues); 
+			 
+			 reds = "*"; blues = "*"; 
+			// var table=document.getElementById("t");
+			 table.rows[1].cells[0].innerHTML = blues; 
+			 table.rows[0].cells[0].innerHTML = reds;
+			 
+
+			 for(var i=1; (i < history_data_red.length)&&(tmp==1)&&(i<8); i++){
+			     table.rows[0].cells[i].innerHTML = history_data_red[ history_data_red.length-i];
+				 table.rows[1].cells[i].innerHTML = history_data_blue[history_data_red.length-i];
+			 }
+
+
+			 
+			 
+			red_counter = 0; 
+			for(ir=1; ir<7; ir++)
+			for(ib=1; ib<7; ib++)
+			{
+				if( body_RED[""+ir+""+ib]["position"] != undefined ){ red_counter += 1; };
+				
+				if( body_RED[""+ir+""+ib]["position"] == undefined )
+				{ 
+				   console.log("==================UNDEF=============== "+ir+"  "+ib );
+				};   
+			};
+			console.log("============= red_counter ==============", red_counter);
+
+
+			red_counter = 0; 
+			for(ir=1; ir<7; ir++)
+			for(ib=1; ib<7; ib++)
+			{
+				if( body_BLUE[""+ir+""+ib]["position"] != undefined ){ red_counter += 1; };
+				
+				if( body_BLUE[""+ir+""+ib]["position"] == undefined )
+				{ 
+				   console.log("==================BLUE UNDEF=============== "+ir+"  "+ib );
+				};   
+			};
+			console.log("============= red_counter ==============", red_counter);
+
+			in_work = 1; 
+			
+        }//-============== end of ROLL1() ================
+		
+		
+		
+		
+		
+		tmpstr =
+           '{"11":{"position":{"x":1.499804650670835,"y":8.4,"z":0.0002797286143569785},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":1.8166282274350405,"y":-1.4006937042251726,"z":-6.829168056417192},"quaternion":{"x":0.04775647777070198,"y":0.6538144607017653,"z":0.1805230812492404,"w":-0.7332512440797331}},"12":{"position":{"x":1.5000047437460178,"y":8.400000490923045,"z":0.00018937781025611908},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":1.3632567941462796,"y":-2.364109069186041,"z":-0.004085781050712126},"quaternion":{"x":0.3241163820363545,"y":-0.4498751242094266,"z":-0.7665329480980871,"w":-0.32401880037008945}},"13":{"position":{"x":1.2458462680940485,"y":8.26486986488235,"z":0.013617885565965618},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":0.2546252157657962,"y":-3.159335356099801,"z":-4.856778037723412},"quaternion":{"x":0.4497668957282882,"y":0.16787275778543534,"z":0.7044471372200415,"w":0.5227644857514134}},"14":{"position":{"x":1.4998170311501933,"y":8.399999999999734,"z":-0.000024869198041171456},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":5.182200722827066,"y":-8.220927990532777,"z":-3.000744554735861},"quaternion":{"x":-0.22931417602816667,"y":-0.6376190249544199,"z":-0.6344098616130271,"w":0.37199612252930475}},"15":{"position":{"x":1.5000312705898633,"y":8.400000000002846,"z":0.00022624655172866432},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":2.492685969534356,"y":-5.461771847232738,"z":-0.8486441896052829},"quaternion":{"x":-0.4433305778642166,"y":0.8655537008587139,"z":0.22017031619732808,"w":0.07615655930996573}},"16":{"position":{"x":1.4997726134084768,"y":8.399999999999345,"z":-0.00009312790922224933},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":0.9942887548002635,"y":-6.351807544915457,"z":-0.8795919164958153},"quaternion":{"x":-0.07946024867214094,"y":-0.6182025675191183,"z":-0.5739858139528005,"w":-0.5310856237695315}},"21":{"position":{"x":1.499804650670835,"y":8.4,"z":0.0002797286143569785},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":1.8166282274350405,"y":-1.4006937042251726,"z":-6.829168056417192},"quaternion":{"x":0.04775647777070198,"y":0.6538144607017653,"z":0.1805230812492404,"w":-0.7332512440797331}},"22":{"position":{"x":1.5000853977603417,"y":8.400000000000293,"z":0.00020520656702902935},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":0.41959908841617727,"y":-0.9025225181402254,"z":-6.2322728800645235},"quaternion":{"x":0.7666340709514955,"y":0.49134295506227343,"z":0.2960669623233198,"w":-0.2884417715721006}},"23":{"position":{"x":1.5001810043564314,"y":8.400008051774963,"z":-0.00005178566845511284},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":4.312221018885627,"y":-2.72690754806469,"z":-4.300936430730079},"quaternion":{"x":-0.035030653737307356,"y":-0.8445866860810005,"z":0.43924432428591825,"w":0.30415556311870634}},"24":{"position":{"x":1.4999488366389129,"y":8.400000000000164,"z":0.00008005332432100346},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":3.258704739180009,"y":-3.9959325966835983,"z":-2.8950310203198164},"quaternion":{"x":0.5883928618838803,"y":0.7513665940528131,"z":-0.20707868144373587,"w":-0.21531488828479983}},"25":{"position":{"x":1.5000868352411978,"y":8.400000011481058,"z":-0.00003868201976457743},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":1.7816210530058936,"y":-3.0022321669844607,"z":-4.8174461853176105},"quaternion":{"x":0.028357993987668178,"y":-0.0947836869586866,"z":-0.6585653050424967,"w":-0.7459916995904154}},"26":{"position":{"x":1.4998091145739483,"y":8.4000000000075,"z":-0.00015230343184525656},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":3.3096659805274418,"y":-7.827395464681263,"z":-2.203052664935776},"quaternion":{"x":-0.6134213616147731,"y":-0.6031817695013282,"z":-0.43990803410999724,"w":0.25761775478681925}},"31":{"position":{"x":1.5003216567933246,"y":8.4,"z":0.00008900894600564184},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":2.273410855595162,"y":-1.5781771547777759,"z":-4.72980206270644},"quaternion":{"x":-0.5455336786364714,"y":0.06287824548644136,"z":-0.639166214498536,"w":0.5384290872171728}},"32":{"position":{"x":1.500147897922175,"y":8.399999999999745,"z":-0.0003205440609914153},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":6.397886877224528,"y":-1.5351807678024862,"z":-6.5033970087832875},"quaternion":{"x":-0.2976451456482259,"y":-0.6721241951218898,"z":0.20499381197814068,"w":0.6462460604556662}},"33":{"position":{"x":1.5000272850584087,"y":8.399999999997904,"z":0.00020328414535406502},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":5.52376877160126,"y":-1.1650116989607033,"z":-5.740722569854818},"quaternion":{"x":-0.12248600518861613,"y":-0.049650017690432285,"z":0.8457084306723329,"w":-0.5170196365381242}},"34":{"position":{"x":1.4998749605672328,"y":8.400000000000231,"z":0.00008588770732382055},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":5.8328508377147195,"y":-5.1981432522573074,"z":-1.078288619080937},"quaternion":{"x":-0.7924124950341389,"y":0.356242087206638,"z":0.4708426733008304,"w":-0.1532357334806608}},"35":{"position":{"x":1.5001295241732306,"y":8.400000000000587,"z":-0.00009206081029141484},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":3.070980024472207,"y":-6.721284604759164,"z":-2.613610919833805},"quaternion":{"x":0.19068670335919022,"y":0.880171750081564,"z":0.24699063669520838,"w":-0.3576756867684139}},"36":{"position":{"x":1.5000613767873445,"y":8.399999999997016,"z":0.00021275142071814048},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":4.35037635231366,"y":-3.5472036239409177,"z":-1.0245204093984663},"quaternion":{"x":0.48051756805701473,"y":-0.052008312071375656,"z":0.20374258579971977,"w":-0.8514029369198243}},"41":{"position":{"x":1.4998979868617852,"y":8.400000000004084,"z":-0.00008403777964982428},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":0.3694322491530413,"y":-4.212970837665406,"z":-5.976879397192404},"quaternion":{"x":0.48805631787832154,"y":0.48229724870182666,"z":0.09011428001032311,"w":-0.7218516544359541}},"42":{"position":{"x":1.4997765869300432,"y":8.399999999994964,"z":0.00014179665332503266},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":0.8003386131845787,"y":-6.060402539228357,"z":-2.447685232314712},"quaternion":{"x":-0.2653022896066577,"y":0.7053747344762812,"z":0.6485574332299592,"w":-0.1069319170975062}},"43":{"position":{"x":1.6693655299979173,"y":8.34516840629468,"z":-0.08589697443192264},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":2.756200973756834,"y":-0.15385218877035045,"z":-0.8748204029785638},"quaternion":{"x":-0.19839823600661338,"y":0.3427067669062689,"z":-0.8704013038028461,"w":0.2925607325059574}},"44":{"position":{"x":1.4997975635187437,"y":8.399999999996677,"z":-9.769303681581912e-7},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":5.341499226755803,"y":-6.727842173376236,"z":-7.676483813298178},"quaternion":{"x":0.569165601577137,"y":0.13369781583505302,"z":-0.7253505311127699,"w":-0.3633758646865453}},"45":{"position":{"x":1.4998113272845364,"y":8.400000000000144,"z":-0.000044235356775949285},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":4.338425294935234,"y":-7.79000035127868,"z":-5.366999879063524},"quaternion":{"x":0.34886910302665947,"y":-0.6494538135572689,"z":-0.5294491802000525,"w":0.41974237169338346}},"46":{"position":{"x":1.500091388569594,"y":8.399999999999855,"z":-0.00003074237019947119},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":4.87239062350867,"y":-0.8383361909434961,"z":-3.642389878229736},"quaternion":{"x":0.38366101280096476,"y":0.750945209486725,"z":-0.47557592405877697,"w":-0.25042575758319435}},"51":{"position":{"x":1.4998781490872235,"y":8.400000000002432,"z":-0.00006451418216556072},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":1.1266254349544547,"y":-2.585301769692192,"z":-4.665677174100642},"quaternion":{"x":0.4964464924799194,"y":0.7774340218089718,"z":-0.26766711099788204,"w":-0.27837302227112426}},"52":{"position":{"x":1.5002116808110229,"y":8.399999999999851,"z":0.000002279809488617404},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":5.6285981008218435,"y":-0.3296195932753678,"z":-6.1506917148559666},"quaternion":{"x":-0.30954355961532554,"y":-0.29607192594005066,"z":0.05780798505354951,"w":0.901766286925205}},"53":{"position":{"x":1.5001504254155094,"y":8.399999999998043,"z":0.00000386872008183032},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":6.166152859160082,"y":-4.893943991835088,"z":-5.617266184132241},"quaternion":{"x":-0.7819573249792234,"y":-0.31536013579651356,"z":0.5193767680345648,"w":0.13906293355064675}},"54":{"position":{"x":1.4999264205441847,"y":8.39999999999979,"z":0.0002691275416848224},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":2.512890828439802,"y":-3.956656856116273,"z":-3.9315755142180167},"quaternion":{"x":-0.4400829291028286,"y":-0.27043574084726146,"z":-0.4446866206254115,"w":0.7317413033452593}},"55":{"position":{"x":1.499830217277504,"y":8.40000000000032,"z":-0.00013060502643303954},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":0.33046641019774,"y":-1.0470023726403546,"z":-3.441987424183151},"quaternion":{"x":0.5471911826770136,"y":0.3314681308513492,"z":0.4281932345568931,"w":-0.6382485736060437}},"56":{"position":{"x":1.499673950357969,"y":8.399999999990332,"z":0.000200297330853563},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":5.068930694834224,"y":-7.445483608906724,"z":-6.078106851985023},"quaternion":{"x":0.29688470620168084,"y":0.18675040884104224,"z":0.3604967454129344,"w":-0.8643065732527592}},"61":{"position":{"x":1.3055661113319341,"y":8.243841388756113,"z":0.13671508403993052},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":3.806204323607157,"y":-0.9763502870204686,"z":-5.149805813768635},"quaternion":{"x":0.3105332606935138,"y":0.17493118272768104,"z":-0.9339928656066454,"w":0.025010044151019113}},"62":{"position":{"x":1.500038132446194,"y":8.399999999999155,"z":0.00010844490289617614},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":4.9656256820885565,"y":-3.1575973189970235,"z":-7.653874970868351},"quaternion":{"x":0.2138897726402095,"y":0.9263884105133712,"z":0.017972898634531692,"w":-0.30940693744824466}},"63":{"position":{"x":1.5002591071726679,"y":8.400000000011705,"z":0.0004970149435789967},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":6.410370882548503,"y":-1.8978833851165149,"z":-6.763585687643205},"quaternion":{"x":-0.1665543013736574,"y":-0.7690487151820123,"z":0.47591441004335694,"w":0.39284756927326464}},"64":{"position":{"x":1.499978719596011,"y":8.4,"z":0.00017142798326729187},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":4.003157769767374,"y":-4.511942386224417,"z":-3.8611329210480907},"quaternion":{"x":-0.5335820790463756,"y":0.6001680224317552,"z":0.5154463798076984,"w":-0.299004246314399}},"65":{"position":{"x":1.499830217277504,"y":8.40000000000032,"z":-0.00013060502643303954},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":0.33046641019774,"y":-1.0470023726403546,"z":-3.441987424183151},"quaternion":{"x":0.5471911826770136,"y":0.3314681308513492,"z":0.4281932345568931,"w":-0.6382485736060437}},"66":{"position":{"x":1.5002866981037046,"y":8.40000000000769,"z":0.0001686330255694804},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":7.126993600968689,"y":-3.5038356367373837,"z":-1.4922300207580228},"quaternion":{"x":0.8385869746847789,"y":-0.28390329655788776,"z":-0.2603314652426836,"w":-0.38522504110868977}},"117":{"position":{"x":1.5,"y":8.4,"z":0},"velocity":{"x":-2,"y":0,"z":5},"angularVelocity":{"x":7.233903431653842,"y":-3.632142244011524,"z":-5.943007210373416},"quaternion":{"x":0.7308658313311924,"y":-0.14482536071642224,"z":-0.5446720508909602,"w":-0.38495858019293255}}}';			 
+        body_RED = JSON.parse(tmpstr);
+		console.log("*************************** RED JSON **********************",body_RED);
+		
+		tmpstr1 = 
+		   '{"11":{"position":{"x":-1.700015873046347,"y":7.999999999999883,"z":-0.00032002535428996926},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-2.7097672387126726,"y":-1.663023116536967,"z":5.098141651549323},"quaternion":{"x":-0.43292364604422634,"y":-0.6042816454509048,"z":0.3498573659335221,"w":0.5701058087486724}},"12":{"position":{"x":-1.7001683857140635,"y":8.0000000000135,"z":0.0001578989167463225},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-5.0014034154426765,"y":-0.00016252824906158147,"z":5.155701843302821},"quaternion":{"x":0.09316500612173281,"y":0.633357203113095,"z":-0.4940071662980736,"w":-0.5883331152886454}},"13":{"position":{"x":-1.7001770178127187,"y":8.000076938770455,"z":-0.0002887418922375806},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-3.8467759468253733,"y":-0.8858565849732786,"z":4.599038298803269},"quaternion":{"x":0.1935061872942592,"y":0.96315566447142,"z":0.05102973769118678,"w":0.1796732794452897}},"14":{"position":{"x":-1.700082373536682,"y":7.999999999995926,"z":0.000286810610424665},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-3.2543504627404953,"y":-6.643934710697929,"z":5.942065435206439},"quaternion":{"x":-0.02571482064109389,"y":-0.8008566223809354,"z":-0.2113231116256403,"w":0.5597409765961873}},"15":{"position":{"x":-1.6998302126528455,"y":8.000000000005533,"z":-0.00031947059094348954},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-1.9517614453330976,"y":-2.633859427271814,"z":4.227011707685095},"quaternion":{"x":-0.08380928047933858,"y":0.8798665069412561,"z":0.15457977199673079,"w":-0.4414929541430605}},"16":{"position":{"x":-1.6997764038508327,"y":7.999999999999498,"z":-0.0000964087678352967},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-4.606818132266981,"y":-5.770542798835524,"z":3.3663153912989823},"quaternion":{"x":0.27198003493513423,"y":0.07290942064271297,"z":0.21462904813314398,"w":-0.9352248118370726}},"21":{"position":{"x":-1.7001116590405667,"y":8.000000000005178,"z":0.0001827198505608894},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-5.099192940507658,"y":-8.607109549393135,"z":5.671471271455477},"quaternion":{"x":-0.8813936063949015,"y":0.3702067547868426,"z":-0.2919592772662486,"w":0.029189890965089508}},"22":{"position":{"x":-1.7001116590405667,"y":8.000000000005178,"z":0.0001827198505608894},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-5.099192940507658,"y":-8.607109549393135,"z":5.671471271455477},"quaternion":{"x":-0.8813936063949015,"y":0.3702067547868426,"z":-0.2919592772662486,"w":0.029189890965089508}},"23":{"position":{"x":-1.7001792997118883,"y":8,"z":0.000059237626109207004},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-5.924498856638135,"y":-0.11875479615142823,"z":6.26630694359813},"quaternion":{"x":-0.06371356997295856,"y":-0.36327510337036384,"z":-0.4073174415895945,"w":0.8355024129525059}},"24":{"position":{"x":-1.6998978346552631,"y":8.000000000004821,"z":0.0001452907210753375},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-4.56354149695622,"y":-9.58783559348612,"z":0.8006532880625367},"quaternion":{"x":-0.043864361304010765,"y":0.5783017802596532,"z":0.6406871121740185,"w":0.5031530513174134}},"25":{"position":{"x":-1.7055468470559725,"y":8.008641493302676,"z":0.0006837720427665288},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-1.3358159306427,"y":-8.158121339636336,"z":2.4380034293766175},"quaternion":{"x":0.14097318999612493,"y":-0.8779805606983077,"z":0.012362333122798119,"w":-0.457300631377175}},"26":{"position":{"x":-1.6999946052224018,"y":8.000000000002025,"z":-0.000218361634318628},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-5.8916527450206155,"y":-1.4231374625056308,"z":2.621083909663516},"quaternion":{"x":-0.05056954483502455,"y":0.9679345147495227,"z":0.1840384714855479,"w":0.16332586232757998}},"31":{"position":{"x":-1.6999651043065922,"y":8,"z":-0.00034398394194990687},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-0.5966913274024277,"y":-7.407183896877814,"z":3.97919212118697},"quaternion":{"x":-0.6361465827906617,"y":0.5007460155727017,"z":0.5822323753221491,"w":0.0746753923227447}},"32":{"position":{"x":-1.6996518520772739,"y":8.000000000014923,"z":0.000316027432619597},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-5.450467522642368,"y":-8.860141364023491,"z":1.939412071883809},"quaternion":{"x":-0.07409807965167983,"y":-0.9720754794839984,"z":-0.06643579456988391,"w":0.2125206389453883}},"33":{"position":{"x":-1.6998916500664416,"y":8.000000000002935,"z":0.00021648515582155768},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-2.491322164785278,"y":-1.8085565491042652,"z":3.357497080748859},"quaternion":{"x":0.22051465259007696,"y":-0.34663716789784643,"z":0.7765064950659578,"w":-0.47775896113544475}},"34":{"position":{"x":-1.7000419616284441,"y":8.000000000000231,"z":-0.00014977521487325693},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-0.27645306570785294,"y":-6.38669893897525,"z":6.330602935625328},"quaternion":{"x":-0.4033767248941098,"y":0.5952963068678906,"z":-0.6679070647738169,"w":0.1918584834412496}},"35":{"position":{"x":-1.6998919703583808,"y":7.999999999998179,"z":3.47999073951339e-8},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-1.826978405938237,"y":-7.5501445355361305,"z":5.756126636110346},"quaternion":{"x":0.5091592583249408,"y":0.6819525258434629,"z":0.4397333177263844,"w":-0.28693590127250357}},"36":{"position":{"x":-1.7000401055650516,"y":7.999999999999851,"z":0.00012717636160016762},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-4.6258774613848885,"y":-9.448967325515206,"z":4.590815772095118},"quaternion":{"x":-0.8047980610723854,"y":-0.16307737750070347,"z":-0.13767365340011825,"w":0.5538517987702906}},"41":{"position":{"x":-1.700051836837515,"y":7.999999999998398,"z":-0.00015683098538019443},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-3.4002384669822097,"y":-8.0437195277982,"z":0.9768410964156735},"quaternion":{"x":0.2060630248160309,"y":0.1694589539499689,"z":0.01945571808316227,"w":-0.9635575580958923}},"42":{"position":{"x":-1.6998674303415693,"y":8.000000000004412,"z":0.00024739447393139924},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-2.4835296492127883,"y":-4.8858794669186425,"z":1.1634779532375226},"quaternion":{"x":0.4480958815681173,"y":0.5019906477400989,"z":0.07247718637148136,"w":-0.7361810429227591}},"43":{"position":{"x":-1.699910945978909,"y":8.0000081571584,"z":0.0001308343565092648},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-1.508168153047474,"y":-5.6487131076711625,"z":4.332402815486931},"quaternion":{"x":0.47616871008086725,"y":0.4568781946215243,"z":0.6117604843460835,"w":-0.43620498004028424}},"44":{"position":{"x":-1.7002198765250067,"y":7.999999999990749,"z":0.00003115024128512141},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-1.184839283533025,"y":-1.4724063813913544,"z":6.23311908053334},"quaternion":{"x":-0.35001053199229787,"y":0.6100882872120629,"z":-0.5940223003888704,"w":-0.39041313495044544}},"45":{"position":{"x":-1.7000574635877863,"y":8,"z":0.0001792631694424746},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-4.760374994873784,"y":-1.1171832453939285,"z":2.2290318910124225},"quaternion":{"x":-0.014577220501154021,"y":0.9877771662112681,"z":-0.137077286650119,"w":0.07275707552354611}},"46":{"position":{"x":-1.6999581376532238,"y":8.000000000000583,"z":-0.00009406588884674782},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-0.2540853845047555,"y":-9.481028170820693,"z":0.22636821110138408},"quaternion":{"x":0.4736593977273838,"y":0.8127548084086479,"z":0.337445950920113,"w":-0.03473653063814267}},"51":{"position":{"x":-1.699874098527337,"y":8.000000000004372,"z":0.00008799440392921871},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-4.1561644506088085,"y":-10.169271241824937,"z":5.353274058108349},"quaternion":{"x":-0.506657816437938,"y":0.03627443715859799,"z":-0.6202793189066585,"w":0.5976918844922183}},"52":{"position":{"x":-1.6998059336137388,"y":8.000000000009349,"z":-0.0002458978988228786},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-0.9809883352784852,"y":-6.4684695560952905,"z":0.3210029907891469},"quaternion":{"x":-0.820622576940158,"y":0.37317831070683954,"z":0.36144531853734346,"w":0.23806263113206577}},"53":{"position":{"x":-1.699958743127374,"y":8,"z":-0.0001285945817821876},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-0.02936552497963101,"y":-10.200315198909461,"z":5.678581004132236},"quaternion":{"x":-0.19337806736228993,"y":-0.025572130965487435,"z":-0.18935835932190948,"w":0.9623379868507863}},"54":{"position":{"x":-1.699806831325123,"y":8.000000000013976,"z":-0.00030163146003450486},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-0.585753151412185,"y":-3.1427859073134634,"z":4.720661141930957},"quaternion":{"x":-0.8120497320084851,"y":-0.05505786403440988,"z":-0.4474523141885068,"w":0.37058101797078813}},"55":{"position":{"x":-1.6997895566335024,"y":8,"z":-0.00004344990514710561},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-1.2283803877534203,"y":-2.9197859471733296,"z":5.811494211138768},"quaternion":{"x":-0.4467670702706991,"y":0.206554676256976,"z":-0.7518770496116912,"w":0.43865163046012984}},"56":{"position":{"x":-1.6998305297371197,"y":8,"z":-0.00019438007363180727},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-3.953948422993165,"y":-5.0424406437106795,"z":5.989400533543341},"quaternion":{"x":-0.3864326645474309,"y":-0.7397088986205246,"z":0.5366274240091896,"w":-0.12462563489765806}},"61":{"position":{"x":-1.7000839022987178,"y":7.999999999994287,"z":0.00002582122945300788},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-1.8688814204118567,"y":-3.484033053349087,"z":5.07498636993422},"quaternion":{"x":-0.23035087492084522,"y":-0.7747190602403412,"z":0.5837196715656267,"w":-0.077589929442169}},"62":{"position":{"x":-1.6999354831262958,"y":8.0000000000001,"z":-0.00002606305710422501},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-0.5966407221807236,"y":-10.280684845855335,"z":1.909537804391775},"quaternion":{"x":0.6834515714944958,"y":0.4150235495583051,"z":0.5245303648097399,"w":-0.2924334097299597}},"63":{"position":{"x":-1.6997285616385922,"y":8,"z":0.0004552308935581115},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-5.654456641520978,"y":-5.674263994746987,"z":3.6317071097426235},"quaternion":{"x":0.2832169273648377,"y":0.8404374643837899,"z":0.41357620807910234,"w":-0.20593144642107708}},"64":{"position":{"x":-1.699856587868688,"y":8.000000000005933,"z":0.00024024379716919208},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-3.4288546134115587,"y":-9.585846885133948,"z":1.4117947422608308},"quaternion":{"x":-0.41382547906777745,"y":-0.4678893814545723,"z":-0.7776838946869821,"w":0.07096308576203138}},"65":{"position":{"x":-1.6997856882981432,"y":8.000000000000208,"z":0.00018378262885638684},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-5.678624534774724,"y":-7.846920650886632,"z":6.18020920846653},"quaternion":{"x":-0.036737173905576175,"y":0.35706004407724884,"z":-0.36977812101461954,"w":0.8569846242470645}},"117":{"position":{"x":-1.7000000000000002,"y":8,"z":0},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-0.27919019421760066,"y":-6.838759192663914,"z":4.196862061673371},"quaternion":{"x":0.40753207182388856,"y":-0.7825918143824688,"z":0.16187603579267684,"w":-0.4418866500953975}},"66":{"position":{"x":-1.6997856882981432,"y":8.000000000000208,"z":0.00018378262885638684},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-5.678624534774724,"y":-7.846920650886632,"z":6.18020920846653},"quaternion":{"x":-0.036737173905576175,"y":0.35706004407724884,"z":-0.36977812101461954,"w":0.8569846242470645}},"117":{"position":{"x":-1.7000000000000002,"y":8,"z":0},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-0.27919019421760066,"y":-6.838759192663914,"z":4.196862061673371},"quaternion":{"x":0.40753207182388856,"y":-0.7825918143824688,"z":0.16187603579267684,"w":-0.4418866500953975}},"67":{"position":{"x":-1.6997856882981432,"y":8.000000000000208,"z":0.00018378262885638684},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-5.678624534774724,"y":-7.846920650886632,"z":6.18020920846653},"quaternion":{"x":-0.036737173905576175,"y":0.35706004407724884,"z":-0.36977812101461954,"w":0.8569846242470645}},"117":{"position":{"x":-1.7000000000000002,"y":8,"z":0},"velocity":{"x":-1,"y":0,"z":2},"angularVelocity":{"x":-0.27919019421760066,"y":-6.838759192663914,"z":4.196862061673371},"quaternion":{"x":0.40753207182388856,"y":-0.7825918143824688,"z":0.16187603579267684,"w":-0.4418866500953975}}}';
+		body_BLUE = JSON.parse(tmpstr1);
+		console.log("*************************** BLUE JSON **********************",body_BLUE);
+
+		
+
+   </script>
+		
+		
+		
+
+
+		
+		
+		
+		
+<div class="wrapper" style="display:;">
+
+  <div class="content"  style="display:;">
+  
+  <!--
+    t1<br>
+    t2<br>
+  --> 
+	<center>
+		<font color=#FFFFFF face="arial">
+		<table id="t"  style="display:none;">
+			<tr>
+			<!--
+					<td class="tleft">Cell 1-1</td>
+			-->
+                <td class="tcenter"  style="background: rgb(226,29,29);">*</td>
+                <td class="tcenter">*</td>
+				<td class="tcenter">*</td>
+                <td class="tcenter">*</td>
+		        <td class="tcenter">*</td>
+                <td class="tcenter">*</td>
+		        <td class="tcenter">*</td>
+                <td class="tcenter">*</td>
+        <!--		
+                <td>Cell 1-3</td>
+		-->
+        </tr>
+        <tr>
+		<!--
+                <td>Cell 2-1</td>
+		-->		
+                <td class="bcenter"  style="background: rgb(43,43,243);">*</td>
+                <td class="bcenter">*</td>
+                <td class="bcenter">*</td>
+                <td class="bcenter">*</td>
+                <td class="bcenter">*</td>
+                <td class="bcenter">*</td>
+                <td class="bcenter">*</td>
+                <td class="bcenter">*</td>
+        <!--				
+                <td>Cell 2-3</td>
+		-->
+			</tr>
+		</table>
+		</font>
+	</center>
+
+   
+  <!-- 
+   <div><button id="up">button</button></div>
+  -->
+   <!--t3--><br>
+   
+   
+   <!------------------------------ 3D Js -------------------------------------------------------------------------->
+   <div id="Stats-output">
+   </div>
+   <!-- Div which will hold the Output -->
+   <center>
+
+<!--   
+   <div id="i2" style="position: absolute; top: calc(10.25vw + 70px); right: calc(10.25vw - 10.25vw); background: rgb(41,118,41); width: calc(100vw - 10.25vw - 10.25vw + 20.5vw ); height: calc(  100vh - 34.15vw - 70px   );  overflow: hidden;" >
+   </div>
+-->
+
+   <div id="i2" style="position: absolute; top: 13vh; right: 0; background: rgb(41,118,41); width: 100%; height: 100%;  overflow: hidden;" >
+   </div>
+
+
+   <!-- 100vh - 33.15vw ---- WebGL-output -->
+   
+   </center>
+      
+   <!--t4--><br>
+   
+   <!------------------------------------------------------- code --------------------------------------------->
+   <!------------------------- end of 3d code --------------->
+   
+   
+   <!--------------------------------------------------- BOTTOM ------------------------------------>
+   <!-- max-height: 50px; max-width: 140px; 3 -->
+	
+    <div style="position: absolute; bottom: 0; overflow: hidden;">
+		<img src=button-Clear-niz-102-62.png  style="width: calc(102/62*10.25vw*1.4); height: 10.25vw;  " class="rightpic" 
+		><img src=button-Auto-niz-102-62.png   style="width: calc(102/62*10.25vw*1.4); height: 10.25vw; " class="rightpic" 
+		><img src=button-REBET-niz-102-62.png  style="width: calc(102/62*10.25vw*1.4); height: 10.25vw; " class="rightpic" 
+		><img src=button-ROLL-102-62.png       style="width: calc(102/62*10.25vw*1.4); height: 10.25vw; " class="rightpic" id="ROLL" onClick="ROLL();">
+   	</div>
+    
+
+ </div><!-- end of wraper --->
+  
+
+
+  
+  
+</div><!-- 792 -->
+		
+		
+		
+	
+	<script>	
+		initCannon();
+        init();
+        animate();
+    </script>
+	
+		
+		
+		
+		
+		
+		
+		
+		
+    </body>
+</html>

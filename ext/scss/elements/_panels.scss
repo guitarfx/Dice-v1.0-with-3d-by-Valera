@@ -1,0 +1,214 @@
+.top-panel {
+	position:absolute;
+	top: 0px;
+	z-index: $z-panel;
+	display: inline;
+	background-color: $panel-bg;
+	color: #fff;
+	width:100%;
+	height:64px;
+	box-shadow: 0 3px 4px rgba(0, 0, 0, 0.4);
+}
+
+.bottom-panel {
+	position: absolute;
+	bottom: 0px;
+	z-index: $z-panel;
+	//display: inline-block;
+	background-color: $panel-bg;
+	color: #fff;
+	width: 100%;
+	//height: 52px;
+	box-shadow: 0 -3px 4px rgba(0, 0, 0, 0.4);
+
+	&.open {
+		.fair-play {
+			height: 380px;
+		}
+
+		.game-logo {
+			width: 0px;
+			height: 0px;
+			opacity: 0;
+		}
+
+		.window-action {
+			width: 52px;
+			height: 52px;
+			opacity: 1;
+		}
+	}
+
+	.game-logo {
+		width: 64px;
+		height: 52px;
+		opacity: 1;
+		margin-right: 20px;
+		display: inline-block;
+		background: url(#{$img}dice-logo.png) no-repeat center;
+		transition: all ease-in-out 0.3s;
+	}
+
+	.window-action {
+		width: 0px;
+		height: 0px;
+		opacity: 0;
+		position: absolute;
+		right: 0px;
+		top: 0;
+		transition: all ease-in-out 0.3s;
+
+		.minimize {
+			width: 100%;
+			height: 100%;
+			background: url(#{$img}icon-minimize.png) no-repeat center;
+			opacity: 0.8;
+			cursor: pointer;
+			transition: all ease-in-out 0.3s;
+			&:hover {
+				opacity: 0.9;
+			}
+			&:active {
+				opacity: 1;
+				transform: rotate(360deg);
+			}
+		}
+	}
+}
+
+.panel-left {
+	position: relative;
+	left: 0px;
+	float: left;
+	text-align: left;
+	display: inline-block;
+}
+
+
+.panel-right {
+	position: relative;
+	right: 0px;
+	float: right;
+	text-align: right;
+	display: inline-block;
+}
+
+.panel-center {
+	margin: 0 auto;
+    text-align: center;
+	display: inline-block;
+}
+
+.bottom-panel .panel-left,
+.bottom-panel .panel-right {
+	width: 25%;
+	height: 52px;
+}
+
+.bottom-panel .panel-center {
+	width: 50%;
+	height: 52px;
+}
+
+.menu-button {
+	width: 64px;
+	height: 64px;
+	display: inline-block;
+	background: url(#{$img}icon-menu.png) no-repeat center;
+	cursor: pointer;
+	opacity: 0.8;
+	transition: all ease-in-out 0.3s;
+}
+
+.menu-button:hover {
+	opacity: 0.9;
+}
+
+.menu-button:focus,
+.menu-button:active {
+	opacity: 1;
+	transform: rotate(360deg);
+}
+
+.portal-logo {
+	width: 132px;
+	height: 64px;
+	display: inline-block;
+	background: url(#{$img}betvoyager-logo.png) no-repeat center;
+}
+
+.username {
+	max-width: 140px;
+	margin: 0 0 0 14px;
+	height: 64px;
+	line-height: 64px;
+	display: inline-block;
+	font-size: 18px;
+	font-weight: bold;
+	color: #fff;
+	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+	cursor: default;
+}
+
+.exit-button {
+	width: 64px;
+	height: 64px;
+	display: inline-block;
+	background: url(#{$img}icon-exit.png) no-repeat center;
+	cursor: pointer;
+	opacity: 0.8;
+	transition: all ease-in-out 0.3s;
+}
+
+.exit-button:hover {
+	opacity: 0.9;
+}
+
+.exit-button:focus,
+.exit-button:active {
+	opacity: 1;
+	transform: rotate(360deg);
+}
+
+
+
+
+
+
+.info-button {
+	width: 52px;
+	height: 52px;
+	display: inline-block;
+	background: url(#{$img}icon-info.png) no-repeat center;
+	cursor: pointer;
+	opacity: 0.8;
+	transition: all ease-in-out 0.3s;
+}
+
+.info-button:hover {
+	opacity: 0.9;
+}
+
+.info-button:focus,
+.info-button:active {
+	opacity: 1;
+	transform: rotate(360deg);
+}
+
+.fair-play-button {
+	text-align: center;
+	width: 140px;
+	height: 46px;
+	line-height: 46px;
+	font-size: 16px;
+	margin-top: 6px;
+	text-transform: uppercase;
+	font-weight: bold;
+	display: inline-block;
+	cursor: pointer;
+	background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px 4px 0 0;
+}
+

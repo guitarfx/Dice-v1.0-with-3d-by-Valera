@@ -1,0 +1,3 @@
+#! /bin/bash
+scss --watch main.scss:../styles/main.css
+#scss --watch themes/default.scss:../styles/themes/default.css

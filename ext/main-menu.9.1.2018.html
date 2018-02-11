@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>Dice Game Preview</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="styles/main.css" media="all">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	</head>
+	<body>
+
+		<div class="game-view">
+
+
+			<div class="top-panel">
+				<div class="panel-left">
+					<div class="menu-button"></div>
+					<div class="portal-logo"></div>
+				</div>
+
+				<div class="panel-right">
+					<div class="username">Dude with very very long name</div>
+					<div class="exit-button"></div>
+				</div>
+			</div>
+
+
+			
+			<div class="menu-wrapper">
+				<div class="menu-container slideRight">
+					<ul class="menu">
+						<li class="menu-item">
+							<div class="menu-title" style="cursor: pointer;">Full screen</div>
+						</li>
+					
+						<li class="menu-item">
+							<div class="menu-title">Auto Spins</div>
+							<div class="menu-value" contenteditable="true" style="border-radius:5px; border: 1px solid rgba(0,0,0,0.3); padding-right:5px; line-height: 30px; margin-top:15px; height:30px; width:40px; background:rgba(255,255,255,1);">100</div> 
+							<!--<input type="number" name="quantity" min="1" max="5" value="777" width=50><br>-->
+							<!-- <input type="text" name="fname" id="txtfield" value="999" style="width:50px; height:50px;"></input> -->
+						</li>
+						
+						<li class="menu-item">
+							<div class="menu-title">Sound</div>
+							<div class="menu-value">
+								<div class="switch on"><div class="switch-handle">&nbsp;</div></div>
+							</div>
+						</li>
+						
+						<li class="menu-item">
+							<div class="menu-title">Roll by Shake</div>
+							<div class="menu-value">
+								<div class="switch on"><div class="switch-handle">&nbsp;</div></div>
+							</div>
+						</li>
+						
+						<li class="menu-item">
+							<div class="menu-title">Fast Game</div>
+							<div class="menu-value">
+								<div class="switch"><div class="switch-handle">&nbsp;</div></div>
+							</div>
+						</li>
+						
+						
+						<!--
+						<li class="menu-item">
+							<div class="menu-title">Hot Dice in Start</div>
+							<div class="menu-value">
+								<div class="switch"><div class="switch-handle">&nbsp;</div></div>
+							</div>
+						</li>
+						-->
+						
+						<li class="menu-item">
+							<div class="menu-title" style="cursor: pointer;">Color Theme</div>
+						</li>
+						
+						<li class="menu-item">
+							<div class="menu-title" style="cursor: pointer;">Game Rules</div>
+						</li>
+						
+						<li class="menu-item">
+							<div class="menu-title"  style="cursor: pointer;">Paytable</div>
+						</li>	
+						
+						<li class="menu-item">
+							<div class="menu-title"  style="cursor: pointer;">Fair Play</div>
+						</li>
+						
+						<!--
+						<li class="menu-item">
+							<div class="menu-title"  style="cursor: pointer;">Cashier</div>
+						</li>
+						-->
+
+												
+					</ul>
+				</div>
+			</div>
+
+
+			<div class="game-holder">
+
+
+				<div class="top-info-holder">
+					<div class="bet">
+						<div class="bet-title">Bet</div>
+						<div class="bet-num">1.00</div>
+					</div>
+					<div class="result">
+						<div class="result-title">Result</div>
+						<div class="result-num">-0.20</div>
+					</div>
+					<div class="balance">
+						<div class="balance-title">Balance</div>
+						<div class="balance-num">&euro;990.80</div>
+					</div>
+				</div>
+
+
+
+				<div class="dice-result-wrapper slideDown">
+					<div class="dr-slide-left"></div>
+					<div class="dr-holder">
+						<ul class="dr-first-holder">
+							<li class="dr-first current">5</li>
+							<li class="dr-first">2</li>
+							<li class="dr-first">1</li>
+							<li class="dr-first">2</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+							<li class="dr-first">&nbsp;</li>
+						</ul>
+						<ul class="dr-second-holder">
+							<li class="dr-second current">4</li>
+							<li class="dr-second">6</li>
+							<li class="dr-second">2</li>
+							<li class="dr-second">6</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+							<li class="dr-second">&nbsp;</li>
+						</ul>
+					</div>
+					<div class="dr-slide-right"></div>
+				</div>
+
+
+
+				<div class="fields-wrapper slideDown">
+					<div class="fields-holder">
+						<ul class="fields-first-row">
+							<li class="field-1">1</li>
+							<li class="field-2">2</li>
+							<li class="field-3">3</li>
+							<li class="field-4">4</li>
+							<li class="field-5 current">5</li>
+							<li class="field-6">6</li>
+						</ul>
+						<ul class="fields-second-row">
+							<li class="field-1">1</li>
+							<li class="field-2">2</li>
+							<li class="field-3">3</li>
+							<li class="field-4 current">4</li>
+							<li class="field-5">5</li>
+							<li class="field-6">6</li>
+						</ul>
+						<ul class="fields-third-row">
+							<li class="field-1">
+								<div class="block-title">Low</div>
+							</li>
+							<li class="field-2">
+								<div class="block-title">Middle</div>
+							</li>
+							<li class="field-3">
+								<div class="block-title">High</div>
+							</li>
+						</ul>
+						<ul class="fields-fourth-row">
+							<li class="field-1">
+								<div class="block-title">Odd</div>
+							</li>
+							<li class="field-2 current">
+								<div class="block-title">2 &mdash; 6</div>
+							</li>
+							<li class="field-3">
+								<div class="block-title">7</div>
+							</li>
+							<li class="field-4">
+								<div class="block-title">8 &mdash; 12</div>
+							</li>
+							<li class="field-5">
+								<div class="block-title">Even</div>
+							</li>
+						</ul>
+
+						<div class="bets-actions">
+							<div class="bets-actions-button">Save current bet</div>
+							<div class="bets-actions-button">My bets</div>
+							<div class="bets-actions-button disabled">Statistics</div>
+						</div>
+
+					</div>
+				</div>
+
+
+
+				<div class="chips-wrapper slideUp">
+					<div class="chips-slide-left"></div>
+						<div class="chips-holder">
+							<div class="chip" id="chip-clear">&nbsp;</div>
+							<div class="chip" id="chip5c">5&cent;</div>
+							<div class="chip" id="chip10c">10&cent;</div>
+							<div class="chip" id="chip25c">25&cent;</div>
+							<div class="chip" id="chip50c">50&cent;</div>
+							<div class="chip active floating" id="chip1">1</div>
+							<div class="chip" id="chip2">2</div>
+							<div class="chip" id="chip5">5</div>
+							<div class="chip" id="chip10">10</div>
+							<div class="chip" id="chip25">25</div>
+							<div class="chip" id="chip50">50</div>
+							<div class="chip" id="chip100">100</div>
+							<div class="chip" id="chip200">200</div>
+							<div class="chip" id="chip500">500</div>
+							<div class="chip" id="chip1k">1k</div>
+						</div>
+					<div class="chips-slide-right"></div>
+				</div>
+
+
+
+				<div class="button-holder-ingame">
+					<div class="button ingame">Clear</div>
+					<div class="button ingame">Auto</div>
+					<div class="button ingame">Rebet</div>
+					<div class="button ingame">Roll</div>
+				</div>
+
+			</div>
+
+			<div class="bottom-panel">
+				<div class="panel-left">
+					<div class="info-button"></div>
+				</div>
+
+				<div class="panel-center">
+					<div class="fair-play-button">
+						Fair Play
+					</div>
+				</div>
+
+				<div class="panel-right">
+					<div class="game-logo"></div>
+				</div>
+			</div>
+
+		</div>
+
+	</body>
+</html>

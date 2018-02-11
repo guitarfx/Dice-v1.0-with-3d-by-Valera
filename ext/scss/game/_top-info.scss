@@ -1,0 +1,71 @@
+.top-info-holder{
+	width: 100%;
+	display: inline-block;
+	margin: -6px 0 20px 0;
+}
+
+.top-info-stub{
+	display: inline-block;
+	margin-top: 66px;
+}
+
+.bet {
+	width:30%;
+	position: relative;
+	left: 0px;
+	float: left;
+	text-align: left;
+	display: inline-block;
+}
+
+.result {
+	width: 40%;
+	margin: 0 auto;
+    text-align: center;
+	display: inline-block;
+}
+
+.balance {
+	width:30%;
+	position: relative;
+	right: 0px;
+	float: right;
+	text-align: right;
+	display: inline-block;
+}
+
+.bet-title,
+.result-title,
+.balance-title {
+	padding: 0px 10px 4px 10px;
+	font-size: 14px;
+	font-weight: bold;
+	text-transform: uppercase;
+	color: #ffe082;
+	cursor: default;
+}
+
+.bet-num,
+.result-num,
+.balance-num {
+	padding: 0px 10px 0px 10px;
+	font-size: 22px;
+	font-weight: bold;
+	color: #fff;
+	cursor: default;
+}
+
+.result-num {
+	font-size: 32px;
+	line-height: 32px;
+}
+
+.bet-title,
+.bet-num {
+	padding-left: 30px;
+}
+
+.balance-title,
+.balance-num {
+	padding-right: 30px;
+}

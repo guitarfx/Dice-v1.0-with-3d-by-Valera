@@ -1,0 +1,77 @@
+.dice-result-wrapper {
+	width: 100%;
+	display:inline-block;
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.dr-slide-left {
+	width: 6%;
+	height: 60px;
+	display: inline-block;
+	opacity: 0.5;
+	float: left;
+	background: url(#{$img}icon-left-small.png) no-repeat 75% center;
+}
+
+.dr-slide-right {
+	width: 6%;
+	height: 60px;
+	display: inline-block;
+	opacity: 0.5;
+	float: right;
+	background: url(#{$img}icon-right-small.png) no-repeat 25% center;
+}
+
+.dr-holder {
+	width: 88%;
+	cursor: default;
+	display: inline-block;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.dr-first-holder {
+	padding: 0;
+	margin: 0;
+}
+
+.dr-second-holder {
+	padding: 0;
+	margin: 0;
+}
+
+.dr-first,
+.dr-second {
+	width: 28px;
+	height: 28px;
+	line-height: 28px;
+	font-size: 18px;
+	font-weight: bold;
+	text-align: center;
+	border-radius: 4px;
+	margin: 1px;
+	color: #fff;
+	display: inline-block;
+	cursor: default;
+}
+
+.dr-first {
+	background-color: $main1-bg2;
+//	border: solid 1px $main1-bg2;
+//	box-sizing: border-box;
+
+	&.current {
+		background-color: $main1-bg1;
+	}
+}
+
+.dr-second {
+	background-color: $main2-bg2;
+//	border: solid 1px $main2-bg2;
+//	box-sizing: border-box;
+
+	&.current {
+		background-color: $main2-bg1;
+	}
+}
