@@ -1,618 +1,736 @@
-<!doctype html>
-<html>
-<head>
-	<title>Please Throw The Dice</title>
-	<meta charset="UTF-8">
-	<script src="libs/three.min.js"></script>
-	<script src="libs/cannon.min.js"></script>
-	<script src="libs/gyronorm.js"></script>
-	<script src="libs/fulltilt.min.js"></script>
-	<script src="libs/dice.js"></script>
-	<script src="libs/OrbitControls.js"></script>
-	<script src="libs/Tween.js"></script>
-	<script src="gui.js"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-</head>
-
-<body>
-
-
-	<!--table data exchange with main module-->
-	<table id="t" border="1" cellpadding="1" cellspacing="1" style="display:none; width:50px;"><tbody><tr><td>*</td><td>*</td></tr></tbody></table>
-	<!----------- end of table for data exchange with main module -------->
-
-
-	
-	<div id="ThreeJS"  style="position: absolute; left:0px; top:0px; width:100%; height:100%;">
-	</div>
-
-	<style>
-	
-	 section {
-	      color: black;
-	      position: absolute;
-	      top: 50%;
-	      left: 50%;
-	      margin-right: -50%;
-	      transform: translate(-50%, -50%)
-	     }
-
-	     .noselect {
-				 font-size: 120%;
-	       -webkit-touch-callout: none; /* iOS Safari */
-	         -webkit-user-select: none; /* Safari */
-	          -khtml-user-select: none; /* Konqueror HTML */
-	            -moz-user-select: none; /* Firefox */
-	             -ms-user-select: none; /* Internet Explorer/Edge */
-	                 user-select: none; /* Non-prefixed version, currently
-	                                       supported by Chrome and Opera */
-	     }
-
-			 body {
-			  margin: 0;
-			  -webkit-box-sizing:border-box;
-				}
-				
-				canvas {
-				  display: block;
-				}
-				
-				div {
-				  -webkit-box-sizing: border-box;
-				     -moz-box-sizing: border-box;
-				          box-sizing: border-box;
-				}
-		
-	</style>
-
-	<script>
-		// THREE variables
-		var container, scene, camera, renderer, controls, stats, world, dices = [], wallBodies = [], wallMeshes = [];
-
-		// other
-		var planeThreeHeight;
-		var planeThreeWidth;
-		var mouseX = 0, mouseY = 0;
-
-		// constants
-		var CAMERA_GROUND_PITCH = 30;
-		var FLOOR_PITCH = 25;
-		var SCREEN_WIDTH = window.innerWidth; 
-		var SCREEN_HEIGHT = window.innerHeight;
-		SCREEN_WIDTH = 410;
-		SCREEN_HEIGHT = 414; 
-		
-		var VIEW_ANGLE = 33, ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.01, FAR = 20000;
-		var LIMIT_PAD_HORIZONTAL = SCREEN_WIDTH / 6;
-		var LIMIT_PAD_VERTICAL = SCREEN_HEIGHT / 6;
-
-		var dice1ThrowValue = 1;
-		var dice2ThrowValue = 1;
-		var isThrowing = false;
-		
-		var first_time_runned = 0;
-
-		//init();
-
-		function ROLL1(RED, GREEN)
-	    {
-	  		$("#t")[0].rows[0].cells[0].innerHTML  = "*";
-			$("#t")[0].rows[0].cells[1].innerHTML  = "*";
-		
-			SCREEN_WIDTH  = window.ThreeJS.offsetWidth;
-			SCREEN_HEIGHT = window.ThreeJS.offsetHeight;
-			
-			if(first_time_runned == 0){ first_time_runned = 1; init(); };
-			
-			dice1ThrowValue = RED;
-			dice2ThrowValue = GREEN; 
-	    }
-
-		function onMouseDown(event) {
-		  if(isThrowing) return;
-
-		  mouseX = event.clientX;
-		  mouseY = event.clientY;
-
-		  var DISTANCE_BETWEEN_DICES = 2;
-
-		  if(mouseX < LIMIT_PAD_HORIZONTAL || mouseX > SCREEN_WIDTH - LIMIT_PAD_HORIZONTAL){
-		    return;
-		  }
-		  if(mouseY < LIMIT_PAD_VERTICAL || mouseY > SCREEN_HEIGHT - LIMIT_PAD_VERTICAL){
-		    return;
-		  }
-
-		  dragDicesStart();
-
-		  document.addEventListener( 'mousemove', onMouseMove, false );
-		  document.addEventListener( 'mouseup', onMouseUp, false );
-
-		  onMouseMove(event);
-		}
-
-		var diceVelocities = {x1:0, y1:0, x2:0, y2:0}
-		function onMouseMove(event) {
-		  mouseX = event.clientX;
-		  mouseY = event.clientY;
-
-			if(mouseX < LIMIT_PAD_HORIZONTAL) {
-				mouseX = LIMIT_PAD_HORIZONTAL;
-			}
-
-			if(mouseX > SCREEN_WIDTH - LIMIT_PAD_HORIZONTAL) {
-				mouseX = SCREEN_WIDTH - LIMIT_PAD_HORIZONTAL;
-			}
-
-			if(mouseY < LIMIT_PAD_VERTICAL) {
-				mouseY = LIMIT_PAD_VERTICAL;
-			}
-
-			if(mouseY > SCREEN_HEIGHT - LIMIT_PAD_VERTICAL) {
-				mouseY = SCREEN_HEIGHT - LIMIT_PAD_VERTICAL;
-			}
-			// || mouseX > SCREEN_WIDTH - LIMIT_PAD_HORIZONTAL
-			// if(mouseY < LIMIT_PAD_VERTICAL || mouseY > SCREEN_HEIGHT - LIMIT_PAD_VERTICAL){
-			// 	return;
-			// }
-		}
-
-		function onMouseUp(event) {
-		  mouseX = event.clientX;
-		  mouseY = event.clientY;
-
-		  dragDicesStop();
-		  throwDicesMouse();
-		}
-
-		function onTouchStart() {
-		  onMouseDown({clientX : event.pageX, clientY : event.pageY})
-		}
-
-		function onTouchEnd() {
-		  onMouseUp({clientX : event.pageX, clientY : event.pageY})
-		}
-
-		function onTouchMove() {
-		  onMouseMove({clientX : event.pageX, clientY : event.pageY})
-		}
-
-		// FUNCTIONS
-		function initThree() {
-			scene = new THREE.Scene();
-			camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT_RATIO, NEAR, FAR);
-			scene.add(camera);
-		  camera.position.set(0, CAMERA_GROUND_PITCH, 0);
-
-		  renderer = new THREE.WebGLRenderer( {antialias:true} );
-			renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-		  renderer.shadowMap.enabled = true;
-		  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-			container = document.getElementById( 'ThreeJS' );
-			container.appendChild( renderer.domElement );
-		  camera.applyQuaternion( new THREE.Quaternion(-0.7071064276330685, 0, 0, 0.7071071347398497) );
-
-		  //controls = new THREE.OrbitControls( camera, renderer.domElement );
-
-			scene.add( new THREE.AmbientLight( 0xffffff, 0.3 ) );
-
-		  var light = new THREE.SpotLight(0xfffaf4, 0.8);
-		  light.position.y = 13;
-			light.position.z = 10;
-			light.position.x = 10;
-		  scene.add(light);
-
-			var light = new THREE.SpotLight(0x9bbef7, 0.8);
-			light.position.y = 12;
-			light.position.z = -2;
-			light.position.x = -5;
-			scene.add(light);
-
-		  // var spotLightHelper = new THREE.SpotLightHelper( light );
-		  // scene.add( spotLightHelper );
-		}
-
-		function initCannon() {
-		  var GRAVITY_MULTIPLIER = 20;
-
-		  world = new CANNON.World();
-		  world.gravity.set(0, -9.82 * GRAVITY_MULTIPLIER, 0);
-		  world.broadphase = new CANNON.NaiveBroadphase();
-		  world.solver.iterations = 16;
-
-		  DiceManager.setWorld(world);
-		}
-
-		var pixelDemensionalWidthRatio = 0;
-		var pixelDemensionalHeightRatio = 0;
-		function calculatePlaneSizeThreeValues() {
-		  var cameraZ = camera.position.y;
-		  var planeZ = 0;
-		  var distance = cameraZ - planeZ;
-		  var ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT;
-		  var vFov = camera.fov * Math.PI / 180;
-
-		  planeThreeHeight = 2 * Math.tan(vFov / 2) * distance;
-		  planeThreeWidth = planeThreeHeight * ASPECT_RATIO;
-
-		  pixelDemensionalWidthRatio = planeThreeWidth / SCREEN_WIDTH;
-		  pixelDemensionalHeightRatio = planeThreeHeight / SCREEN_HEIGHT;
-		}
-
-		function createPlaneBox() {
-		  var wall;
-		  var plane;
-		  var FLOOR_BODY_MATERIAL = DiceManager.floorBodyMaterial;
-		  var BARRIER_BODY_MATERIAL = DiceManager.barrierBodyMaterial;
-		  var SIZE_CORRECTION = 0.93;
-
-		  // Create Plane
-		  plane = new CANNON.Body({mass: 0, shape : new CANNON.Plane(), material : FLOOR_BODY_MATERIAL});
-		  plane.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
-		  plane.position.set(0,0,0);
-		  this.world.add(plane);
-
-		  var planeGeometry = new THREE.PlaneGeometry( planeThreeWidth, planeThreeHeight, 300 );
-		  var planeMaterial = new THREE.MeshPhongMaterial( {color: 0xffffff, side: THREE.DoubleSide } );
-		  var planeMesh = new THREE.Mesh( planeGeometry, planeMaterial );
-		  planeMesh.receiveShadow  = true;
-		  planeMesh.position.copy(plane.position);
-		  planeMesh.quaternion.copy(plane.quaternion);
-		  scene.add(planeMesh);
-
-		  // Create walls
-		  wall = new CANNON.Body({mass: 0, shape : new CANNON.Plane(), material : BARRIER_BODY_MATERIAL});
-		  wall.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
-		  wall.position.set(0, FLOOR_PITCH, 0);
-		  this.world.add(wall);
-
-		  wall = new CANNON.Body({mass: 0, shape : new CANNON.Plane(), material : BARRIER_BODY_MATERIAL});
-		  wall.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), -Math.PI / 2);
-		  wall.position.set((planeThreeWidth / 2) * SIZE_CORRECTION, 0, 0);
-		  this.world.add(wall);
-
-		  wall = new CANNON.Body({mass: 0, shape : new CANNON.Plane(), material : BARRIER_BODY_MATERIAL});
-		  wall.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI / 2);
-		  wall.position.set((-planeThreeWidth / 2)  * SIZE_CORRECTION, 0, 0);
-		  this.world.add(wall);
-
-		  wall = new CANNON.Body({mass: 0, shape : new CANNON.Plane(), material : BARRIER_BODY_MATERIAL});
-		  wall.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI / 2);
-		  wall.position.set((-planeThreeWidth / 2)  * SIZE_CORRECTION, 0, 0);
-		  this.world.add(wall);
-
-		  wall = new CANNON.Body({mass: 0, shape : new CANNON.Plane(), material : BARRIER_BODY_MATERIAL});
-		  wall.position.set(0, 0, (planeThreeHeight / 2)  * SIZE_CORRECTION);
-		  wall.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI);
-		  this.world.add(wall);
-
-		  wall = new CANNON.Body({mass: 0, shape : new CANNON.Plane(), material : BARRIER_BODY_MATERIAL});
-		  wall.position.set(0, 0, (-planeThreeHeight / 2)  * SIZE_CORRECTION);
-		  wall.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 1), -Math.PI/2);
-		  this.world.add(wall);
-		}
-
-		function createDices() {
-		  var colors = ['#ff0000', '#FFff00', '#00ff00', '#0000ff', '#ff00ff'];
-		  for (var i = 0; i < 2; i++) {
-		      var die = new DiceD6Points({size: 1.5, backColor: colors[i], fontColor: '#ffffff'});
-		      scene.add(die.getObject());
-		      dices.push(die);
-		  }
-		}
-
-		function init()
-		{
-		  document.addEventListener( 'mousedown', onMouseDown, false );
-			document.addEventListener( 'touchstart', onTouchStart, false );
-			document.addEventListener( 'touchend', onTouchEnd, false );
-			document.addEventListener( 'touchmove', onTouchMove, false );
-
-		  initThree();
-		  initCannon();
-		  initGyro();
-
-		  calculatePlaneSizeThreeValues();
-		  createPlaneBox();
-		  createDices();
-
-		  requestAnimationFrame( animate );
-		}
-
-		function initGyro() {
-		  gyro = new GyroNorm();
-		  gyro.init().then(function() {
-		    var isAvailable = gyro.isAvailable();
-
-		    if(!isAvailable.deviceOrientationAvailable) {
-		      console.log({message:'Device orientation is not available.'});
-		    }
-
-		    if(!isAvailable.accelerationAvailable) {
-		      console.log({message:'Device acceleration is not available.'});
-		    }
-
-		    if(!isAvailable.accelerationIncludingGravityAvailable) {
-		      console.log({message:'Device acceleration incl. gravity is not available.'});
-		    }
-
-		    if(!isAvailable.rotationRateAvailable) {
-		      console.log({message:'Device rotation rate is not available.'});
-		    }
-
-		    startGyro();
-		  }).catch(function(e){
-
-		    console.log(e);
-
-		  });
-		}
-
-		function animate(time)
-		{
-		  updatePhysics();
-			render();
-			update();
-
-		  requestAnimationFrame( animate );
-
-		  TWEEN.update(time)
-		}
-
-		function updatePhysics() {
-		  world.step(1.0 / 60.0);
-
-		  for (var i in dices) {
-		      if(!isDragged){
-		        dices[i].updateMeshFromBody();
-		      }
-		  }
-		}
-
-		var MIN_DICE_VELOCITY = 0.01;
-
-		function update()
-		{
-		    if(controls) controls.update()
-
-		    if(isDragged) {
-		      dragDices();
-		    }
-
-				if(isThrowing) {
-					var dice1 = dices[0].getObject().body;
-					var dice2 = dices[1].getObject().body;
-
-					var dice1Vel = Math.abs(dice1.velocity.x) + Math.abs(dice1.velocity.y) + Math.abs(dice1.velocity.z);
-					var dice2Vel = Math.abs(dice2.velocity.x) + Math.abs(dice2.velocity.y) + Math.abs(dice2.velocity.z);
-
-					if(dice1Vel < MIN_DICE_VELOCITY && dice2Vel < MIN_DICE_VELOCITY){
-						dice1.velocity.x = dice1.velocity.y = dice1.velocity.z = 0;
-						dice2.velocity.x = dice2.velocity.y = dice2.velocity.z = 0;
-
-						isThrowing = false;
-
-						onThrowComplete();
-					}
-				}
-		}
-
-		function onThrowComplete() {
-			$("#t")[0].rows[0].cells[0].innerHTML  = ""+dice1ThrowValue;
-			$("#t")[0].rows[0].cells[1].innerHTML  = ""+dice2ThrowValue;
-		}
-
-		// drag variables
-		var dice1StartDistance = 0;
-		var dice2StartDistance = 0;
-		var isDragged = false;
-		var dicesPreviousPosition = {x: 0, y:0};
-		var DISTANCE_OVER_PLANE_DICE1 = 10;
-		var DISTANCE_OVER_PLANE_DICE2 = 12; // расстояние кубиков до пола
-		var DISTANCE_BETWEEN_DICES = 2;
-		var ROTATION_RADIANS_SPEED = 0.02;
-
-		function dragDicesStart() {
-		  isDragged = true;
-
-		  var dice1 = dices[0].getObject();
-		  var dice2 = dices[1].getObject();
-
-		  dicesPreviousPosition = {x1: dice1.position.x, y1: dice1.position.z, x2: dice2.position.x, y2: dice2.position.z};
-
-		  var xThree = ((mouseX/ SCREEN_WIDTH) * planeThreeWidth) - planeThreeWidth / 2;
-		  var yThree = ((mouseY / SCREEN_HEIGHT) * planeThreeHeight) - planeThreeHeight / 2;
-
-		  var dice1Pos = new THREE.Vector3(xThree - DISTANCE_BETWEEN_DICES, DISTANCE_OVER_PLANE_DICE1, yThree)
-		  var dice2Pos = new THREE.Vector3(xThree + DISTANCE_BETWEEN_DICES, DISTANCE_OVER_PLANE_DICE2, yThree)
-
-		  dice1StartDistance = dice1.position.distanceTo(dice1Pos);
-		  dice2StartDistance = dice2.position.distanceTo(dice2Pos);
-		}
-
-		function checkDieBounds() {
-
-		}
-
-		function dragDices() {
-		  var dice1 = dices[0].getObject();
-		  var dice2 = dices[1].getObject();
-		  var DISTANCE_BETWEEN_DICES = 2;
-		  var DISTANCE_OVER_PLANE = 10; // расстояние кубиков до пола
-
-		  var xThree = ((mouseX/ SCREEN_WIDTH) * planeThreeWidth) - planeThreeWidth / 2;
-		  var yThree = ((mouseY / SCREEN_HEIGHT) * planeThreeHeight) - planeThreeHeight / 2;
-
-		  var dice1Pos = new THREE.Vector3(xThree - DISTANCE_BETWEEN_DICES, DISTANCE_OVER_PLANE_DICE1, yThree)
-		  var dice2Pos = new THREE.Vector3(xThree + DISTANCE_BETWEEN_DICES, DISTANCE_OVER_PLANE_DICE2, yThree)
-
-		  var distance1 = dice1.position.distanceTo(dice1Pos);
-		  var distance2 = dice2.position.distanceTo(dice2Pos);
-
-		  var distance1Factor = easeOutQuad(distance1 / dice1StartDistance);
-		  var distance2Factor = easeOutQuad(distance2 / dice2StartDistance);
-
-		  var dir = new THREE.Vector3(); // create once an reuse it
-		  var moveVector1 = dir.subVectors( dice1Pos, dice1.position ).normalize();
-
-		  var dir = new THREE.Vector3(); // create once an reuse it
-		  var moveVector2 = dir.subVectors( dice2Pos, dice2.position ).normalize();
-
-		  dice1.position.x += moveVector1.x * distance1Factor;
-		  dice1.position.y += moveVector1.y * distance1Factor;
-		  dice1.position.z += moveVector1.z * distance1Factor;
-		  dice1.rotation.x += ROTATION_RADIANS_SPEED;
-
-		  dice2.position.x += moveVector2.x * distance2Factor;
-		  dice2.position.y += moveVector2.y * distance2Factor;
-		  dice2.position.z += moveVector2.z * distance2Factor;
-		  dice2.rotation.y += ROTATION_RADIANS_SPEED;
-
-		  diceVelocities.x1 = dicesPreviousPosition.x1 - dice1.position.x;
-		  diceVelocities.y1 = dicesPreviousPosition.y1 - dice1.position.z;
-		  diceVelocities.x2 = dicesPreviousPosition.x2 - dice2.position.x;
-		  diceVelocities.y2 = dicesPreviousPosition.y2 - dice2.position.z;
-
-		  dicesPreviousPosition.x1 = dice1.position.x;
-		  dicesPreviousPosition.y1 = dice1.position.z;
-		  dicesPreviousPosition.x2 = dice2.position.x;
-		  dicesPreviousPosition.y2 = dice2.position.z;
-		}
-
-		// function easeOutQuad(t) { return t*(2-t) }
-		// function easeOutQuad(t) { return (--t)*t*t+1 }
-		// function easeOutQuad(t) { return 1-(--t)*t*t*t }
-		function easeOutQuad(t) { return 1+(--t)*t*t*t*t }
-
-		function dragDicesStop() {
-		  isDragged = false;
-		}
-
-		var THROW_MOUSE_VALIDATION_VELOCITY = 100;
-		var MAX_THROW_VELOCITY = 150;
-		var THROW_MOUSE_VELOCITY_MULTIPLIER = 200;
-		var isMouseThrow = false;
-		function throwDicesMouse() {
-		  isMouseThrow = true;
-			isThrowing = true;
-
-		  var dice1 = dices[0];
-		  var dice2 = dices[1];
-
-		  var xVel = ((diceVelocities.x1 + diceVelocities.x2) / 2) * THROW_MOUSE_VELOCITY_MULTIPLIER;
-		  var yVel = ((diceVelocities.y1 + diceVelocities.y2) / 2) * THROW_MOUSE_VELOCITY_MULTIPLIER;
-		  var velocity = Math.abs(xVel) + Math.abs(yVel);
-
-		  //console.log("velocity : "+velocity);
-
-		  dice1.getObject().body.velocity.x = 0;
-		  dice1.getObject().body.velocity.z = 0;
-		  dice1.getObject().body.velocity.y = 0;
-
-		  dice2.getObject().body.velocity.x = 0;
-		  dice2.getObject().body.velocity.z = 0;
-		  dice2.getObject().body.velocity.y = 0;
-
-		  if(xVel < 0 && xVel < -MAX_THROW_VELOCITY) xVel = -MAX_THROW_VELOCITY;
-		  if(xVel > 0 && xVel > MAX_THROW_VELOCITY) xVel = MAX_THROW_VELOCITY;
-
-		  if(yVel < 0 && yVel < -MAX_THROW_VELOCITY) yVel = -MAX_THROW_VELOCITY;
-		  if(yVel > 0 && yVel > MAX_THROW_VELOCITY) yVel = MAX_THROW_VELOCITY;
-
-		  dice1.updateBodyFromMesh();
-		  dice2.updateBodyFromMesh();
-
-		  dice1.getObject().body.velocity.x -= diceVelocities.x1 * THROW_MOUSE_VELOCITY_MULTIPLIER;
-		  dice1.getObject().body.velocity.z -= diceVelocities.y1 * THROW_MOUSE_VELOCITY_MULTIPLIER;
-
-		  dice2.getObject().body.velocity.x -= diceVelocities.x2 * THROW_MOUSE_VELOCITY_MULTIPLIER;
-		  dice2.getObject().body.velocity.z -= diceVelocities.y2 * THROW_MOUSE_VELOCITY_MULTIPLIER;
-
-		  document.removeEventListener( 'mousemove', onMouseMove, false );
-		  document.removeEventListener( 'mouseup', onMouseUp, false );
-
-		  if(velocity > THROW_MOUSE_VALIDATION_VELOCITY){
-				setThrowResult(dice1ThrowValue, dice2ThrowValue);
-		  }else{
-		    showFalseThrowMessage();
-		    DiceManager.prepareValues([]);
-		  }
-		}
-
-		function render()
-		{
-			renderer.render( scene, camera );
-		}
-
-		function stopGyro() {
-		  gyro.stop();
-		}
-
-		function startGyro() {
-		  gyro.start(gyroCallBack);
-		}
-
-		function toRadians(angle) {
-		  return angle * (Math.PI / 180);
-		}
-
-		function toDegrees(angle) {
-		  return angle * (180 / Math.PI);
-		}
-
-		function setThrowResult(value1, value2) {
-			var diceValues = [];
- 			diceValues[0] = {dice: dices[0], value: value1};
-			diceValues[1] = {dice: dices[1], value: value2};
-
-			DiceManager.prepareValues(diceValues);
-		}
-
-		var THROW_GYRO_VALIDATION_VELOCITY = 16;
-		var THROW_GYRO_MIN_SENSIVITY = 5;
-		var THROW_GYRO_MAX_VELOCITY = 22;
-		function gyroCallBack(data) {
-		  var FORCE_FACTOR = 5;
-		  // $('#do_alpha').val(data.do.alpha);
-		  // $('#dm_x').val(data.dm.x);
-
-		  if(!isThrowing){
-				var xGyro = data.dm.x;
-				var yGyro = data.dm.y;
-				var zGyro = Math.abs(data.dm.z) * 1.3;
-
-		    let throwVelocity = Math.abs(xGyro) + Math.abs(yGyro) + Math.abs(zGyro);
-
-		    if(throwVelocity > THROW_GYRO_VALIDATION_VELOCITY){
-					isThrowing = true;
-
-
-		      if(throwVelocity > THROW_GYRO_MAX_VELOCITY) throwVelocity = THROW_GYRO_MAX_VELOCITY;
-
-		      var dice1 = dices[0];
-		      var dice2 = dices[1];
-
-					console.log("THROW : "+throwVelocity);
-					console.log("x : "+xGyro+", y :"+yGyro+", z : "+zGyro);
-
-		      dice1.getObject().body.velocity.x += xGyro * FORCE_FACTOR * -1;
-		      dice1.getObject().body.velocity.y += zGyro * FORCE_FACTOR;
-		      dice1.getObject().body.velocity.z += yGyro * FORCE_FACTOR * -1;
-
-			    dice2.getObject().body.velocity.x += xGyro * FORCE_FACTOR * -1;
-		      dice2.getObject().body.velocity.y += zGyro * FORCE_FACTOR;
-		      dice2.getObject().body.velocity.z += yGyro * FORCE_FACTOR * -1;
-					setThrowResult(dice1ThrowValue, dice2ThrowValue);
-
-		    }
-
-				// if(throwVelocity > THROW_GYRO_MIN_SENSIVITY && throwVelocity < THROW_GYRO_VALIDATION_VELOCITY){ //Подбросил, но слабо
-		    //   showFalseThrowMessage();
-		    // }
-		  }
-		}
-	</script>
-
-</body>
-</html>
+<!doctype html>
+<html>
+<head>
+	<title>Please Throw The Dice</title>
+	<meta charset="UTF-8">
+	<script src="./libs/three.min.js"></script>
+	<script src="./libs/cannon.min.js"></script>
+	<script src="./libs/gyronorm.js"></script>
+	<script src="./libs/fulltilt.min.js"></script>
+	<script src="./libs/dice.js"></script>
+	<script src="./libs/OrbitControls.js"></script>
+	<script src="./libs/Tween.js"></script>
+	<script src="./gui.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+</head>
+
+<body>
+	<!--table data exchange with main module--><table id="t" border="1" cellpadding="1" cellspacing="1" style="width: 50px;"><tbody><tr><td>*</td><td>*</td></tr></tbody></table><!----------- end of table for data exchange with main module -------->
+
+	<div id="ThreeJS" style="position: absolute; left:0px; top:0px">
+	</div>
+
+	<style>
+	  section {
+	      color: white;
+	      position: absolute;
+	      top: 50%;
+	      left: 50%;
+	      margin-right: -50%;
+	      transform: translate(-50%, -50%)
+	     }
+
+	     .noselect {
+				 font-size: 120%;
+	       -webkit-touch-callout: none; /* iOS Safari */
+	         -webkit-user-select: none; /* Safari */
+	          -khtml-user-select: none; /* Konqueror HTML */
+	            -moz-user-select: none; /* Firefox */
+	             -ms-user-select: none; /* Internet Explorer/Edge */
+	                 user-select: none; /* Non-prefixed version, currently
+	                                       supported by Chrome and Opera */
+	     }
+
+			 body {
+			  margin: 0;
+			  	-webkit-box-sizing:border-box;
+				}
+				canvas {
+				  display: block;
+				}
+				div {
+				  -webkit-box-sizing: border-box;
+				     -moz-box-sizing: border-box;
+				          box-sizing: border-box;
+				}
+	</style>
+
+	<script>
+		// THREE variables
+		var container, scene, camera, renderer, controls, stats, world, dices = [], wallBodies = [], wallMeshes = [];
+
+		// other
+		var planeThreeHeight;
+		var planeThreeWidth;
+		var mouseX = 0, mouseY = 0;
+
+		// constants
+		var CAMERA_GROUND_PITCH = 30;
+		var FLOOR_PITCH = 14;
+		var DIE_SIZE = 2.5;
+
+		var SCREEN_WIDTH = $(window).width();
+		var SCREEN_HEIGHT = $(window).height();
+//        var SCREEN_WIDTH = 2;
+//        var SCREEN_HEIGHT = 2;
+
+		var VIEW_ANGLE = 33, ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.01, FAR = 20000;
+		var LIMIT_PAD_HORIZONTAL = SCREEN_WIDTH / 6;
+		var LIMIT_PAD_VERTICAL = SCREEN_HEIGHT / 6;
+
+		var dice1ThrowValue = 1;
+		var dice2ThrowValue = 1;
+		var isGyroListening = false;
+		var throwType = 0;
+
+        var ThrowType = {
+			NONE : 0,
+			MOUSE : 1,
+			SYSTEM : 2,
+			GYRO: 3
+		}
+
+        var pixelDemensionalWidthRatio = 0;
+        var pixelDemensionalHeightRatio = 0;
+
+        var ceil;
+        var wall1;
+        var wall2;
+        var wall3;
+        var wall4;
+        var PLANE_SIZE_CORRECTION = 0.93;
+        var planeMesh;
+
+        init();
+
+		function tryResize() {
+            var newWidth = $(window).width();
+            var newHeight = $(window).height();
+
+            if(!newWidth || !newHeight || newWidth === 1 || newHeight === 1) return;
+
+            if(newWidth != SCREEN_WIDTH || newHeight != SCREEN_HEIGHT) {
+                console.log("newWidth!"+newWidth)
+                console.log("newHeight!" + newHeight);
+				 SCREEN_WIDTH = newWidth;
+				 SCREEN_HEIGHT = newHeight;
+				 ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT;
+				 LIMIT_PAD_HORIZONTAL = SCREEN_WIDTH / 6;
+				 LIMIT_PAD_VERTICAL = SCREEN_HEIGHT / 6;
+
+                renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+                scene.remove(camera);
+                camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT_RATIO, NEAR, FAR);
+                camera.position.set(0, CAMERA_GROUND_PITCH, 0);
+                camera.applyQuaternion( new THREE.Quaternion(-0.7071064276330685, 0, 0, 0.7071071347398497) );
+                scene.add(camera);
+
+                calculatePlaneSizeThreeValues();
+                resizePlaneBox();
+
+                return true;
+            }else{
+                return false;
+			}
+        }
+
+		function ROLL1(RED, GREEN)
+	  	{
+            console.log("RED : "+RED+" | GREEN : "+GREEN);
+
+            $("#t")[0].rows[0].cells[0].innerHTML  = "*";
+            $("#t")[0].rows[0].cells[1].innerHTML  = "*";
+
+            dice1ThrowValue = RED;
+            dice2ThrowValue = GREEN;
+
+	  	    if( tryResize() ){ // если был ресайз, то бросок будет работать только на следующем кадре
+                console.log("throw after resize");
+
+				throwDiceRandom();
+			} else {
+                console.log("throw without resize");
+
+                throwDiceRandom();
+			}
+	  	}
+
+		function onMouseDown(event) {
+		  	if(throwType != ThrowType.NONE) return;
+
+            ROLL1(2, 2);
+            return;
+
+		  	mouseX = event.clientX;
+		  	mouseY = event.clientY;
+
+		  	var DISTANCE_BETWEEN_DICES = 2;
+
+		  	if(mouseX < LIMIT_PAD_HORIZONTAL || mouseX > SCREEN_WIDTH - LIMIT_PAD_HORIZONTAL){
+		    	return;
+		  	}
+		  	if(mouseY < LIMIT_PAD_VERTICAL || mouseY > SCREEN_HEIGHT - LIMIT_PAD_VERTICAL){
+		    	return;
+		  	}
+
+		  	dragDicesStart();
+
+		  	document.addEventListener( 'mousemove', onMouseMove, false );
+		  	document.addEventListener( 'mouseup', onMouseUp, false );
+			document.addEventListener( 'touchend', onTouchEnd, false );
+			document.addEventListener( 'touchmove', onTouchMove, false );
+
+		  	onMouseMove(event);
+		}
+
+		var diceVelocities = {x1:0, y1:0, x2:0, y2:0}
+		function onMouseMove(event) {
+		  	mouseX = event.clientX;
+		  	mouseY = event.clientY;
+
+			if(mouseX < LIMIT_PAD_HORIZONTAL) {
+				mouseX = LIMIT_PAD_HORIZONTAL;
+			}
+
+			if(mouseX > SCREEN_WIDTH - LIMIT_PAD_HORIZONTAL) {
+				mouseX = SCREEN_WIDTH - LIMIT_PAD_HORIZONTAL;
+			}
+
+			if(mouseY < LIMIT_PAD_VERTICAL) {
+				mouseY = LIMIT_PAD_VERTICAL;
+			}
+
+			if(mouseY > SCREEN_HEIGHT - LIMIT_PAD_VERTICAL) {
+				mouseY = SCREEN_HEIGHT - LIMIT_PAD_VERTICAL;
+			}
+			// || mouseX > SCREEN_WIDTH - LIMIT_PAD_HORIZONTAL
+			// if(mouseY < LIMIT_PAD_VERTICAL || mouseY > SCREEN_HEIGHT - LIMIT_PAD_VERTICAL){
+			// 	return;
+			// }
+		}
+
+		function onMouseUp(event) {
+		  mouseX = event.clientX;
+		  mouseY = event.clientY;
+
+		  dragDicesStop();
+		  throwDicesMouse();
+		}
+
+		function onTouchStart() {
+
+			throwDiceRandom()
+		  	onMouseDown({clientX : event.pageX, clientY : event.pageY})
+		}
+
+		function onTouchEnd() {
+		  onMouseUp({clientX : event.pageX, clientY : event.pageY})
+		}
+
+		function onTouchMove() {
+		  onMouseMove({clientX : event.pageX, clientY : event.pageY})
+		}
+
+		// FUNCTIONS
+		function initThree() {
+			scene = new THREE.Scene();
+			camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT_RATIO, NEAR, FAR);
+			scene.add(camera);
+		  	camera.position.set(0, CAMERA_GROUND_PITCH, 0);
+
+		  	renderer = new THREE.WebGLRenderer( {antialias:true} );
+            renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+		  	renderer.shadowMap.enabled = true;
+		  	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+			container = document.getElementById( 'ThreeJS' );
+			container.appendChild( renderer.domElement );
+		  	camera.applyQuaternion( new THREE.Quaternion(-0.7071064276330685, 0, 0, 0.7071071347398497) );
+
+		  	//controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+			scene.add( new THREE.AmbientLight( 0xffffff, 0.2 ) );
+
+			var LIGTH_PITCH = 30;
+			var SHADOW_TEXTURE_SIZE = 2048;
+
+		  	var light = new THREE.SpotLight(0xfffaf4, 0.7);
+		  	light.position.y = LIGTH_PITCH;
+            light.position.z = 10;
+            light.position.x = 13;
+            light.castShadow = true;
+            light.shadow.mapSize.width = SHADOW_TEXTURE_SIZE;
+            light.shadow.mapSize.height = SHADOW_TEXTURE_SIZE;
+		  	scene.add(light);
+
+			var light = new THREE.SpotLight(0x9bbef7, 0.5);
+			light.position.y = LIGTH_PITCH;
+			light.position.z = -2;
+			light.position.x = -5;
+            light.castShadow = true;
+            light.shadow.mapSize.width = SHADOW_TEXTURE_SIZE;
+            light.shadow.mapSize.height = SHADOW_TEXTURE_SIZE;
+			scene.add(light);
+
+		  // var spotLightHelper = new THREE.SpotLightHelper( light );
+		  // scene.add( spotLightHelper );
+		}
+
+		function initCannon() {
+		  var GRAVITY_MULTIPLIER = 20;
+
+		  world = new CANNON.World();
+		  world.gravity.set(0, -9.82 * GRAVITY_MULTIPLIER, 0);
+		  world.broadphase = new CANNON.NaiveBroadphase();
+		  world.solver.iterations = 16;
+
+		  DiceManager.setWorld(world);
+		}
+
+
+		function calculatePlaneSizeThreeValues() {
+		  var cameraZ = camera.position.y;
+		  var planeZ = 0;
+		  var distance = cameraZ - planeZ;
+		  var ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT;
+		  var vFov = camera.fov * Math.PI / 180;
+
+		  planeThreeHeight = 2 * Math.tan(vFov / 2) * distance;
+		  planeThreeWidth = planeThreeHeight * ASPECT_RATIO;
+
+		  pixelDemensionalWidthRatio = planeThreeWidth / SCREEN_WIDTH;
+		  pixelDemensionalHeightRatio = planeThreeHeight / SCREEN_HEIGHT;
+		}
+
+
+		function createPlaneBox() {
+		  var wall;
+		  var plane;
+		  var FLOOR_BODY_MATERIAL = DiceManager.floorBodyMaterial;
+		  var BARRIER_BODY_MATERIAL = DiceManager.barrierBodyMaterial;
+
+		  // Create Plane
+		  plane = new CANNON.Body({mass: 0, shape : new CANNON.Plane(), material : FLOOR_BODY_MATERIAL});
+		  plane.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+		  plane.position.set(0,0,0);
+		  this.world.add(plane);
+
+				var texture = new THREE.TextureLoader().load( "img/plane_tile.png" );
+				texture.wrapS = THREE.RepeatWrapping;
+				texture.wrapT = THREE.RepeatWrapping;
+				texture.repeat.set( 4, 4 );
+
+		  var planeGeometry = new THREE.PlaneGeometry( planeThreeWidth, planeThreeHeight, 300 );
+//		  var planeMaterial = new THREE.MeshPhongMaterial( {color: 0xffffff, side: THREE.DoubleSide } );
+		  var planeMaterial = new THREE.MeshPhongMaterial( { map: texture } );
+		  planeMesh = new THREE.Mesh( planeGeometry, planeMaterial );
+		  planeMesh.receiveShadow  = true;
+		  planeMesh.position.copy(plane.position);
+		  planeMesh.quaternion.copy(plane.quaternion);
+		  scene.add(planeMesh);
+
+		  // Create walls
+		  ceil = new CANNON.Body({mass: 0, shape : new CANNON.Plane(), material : BARRIER_BODY_MATERIAL});
+		  ceil.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
+		  ceil.position.set(0, FLOOR_PITCH, 0);
+		  this.world.add(ceil);
+
+		  wall1 = new CANNON.Body({mass: 0, shape : new CANNON.Plane(), material : BARRIER_BODY_MATERIAL});
+		  wall1.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), -Math.PI / 2);
+		  wall1.position.set((planeThreeWidth / 2) * PLANE_SIZE_CORRECTION, 0, 0);
+		  this.world.add(wall1);
+
+		  wall2 = new CANNON.Body({mass: 0, shape : new CANNON.Plane(), material : BARRIER_BODY_MATERIAL});
+		  wall2.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI / 2);
+		  wall2.position.set((-planeThreeWidth / 2)  * PLANE_SIZE_CORRECTION, 0, 0);
+		  this.world.add(wall2);
+
+		  wall3 = new CANNON.Body({mass: 0, shape : new CANNON.Plane(), material : BARRIER_BODY_MATERIAL});
+		  wall3.position.set(0, 0, (planeThreeHeight / 2)  * PLANE_SIZE_CORRECTION);
+		  wall3.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI);
+		  this.world.add(wall3);
+
+		  wall4 = new CANNON.Body({mass: 0, shape : new CANNON.Plane(), material : BARRIER_BODY_MATERIAL});
+		  wall4.position.set(0, 0, (-planeThreeHeight / 2)  * PLANE_SIZE_CORRECTION);
+		  wall4.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 0, 1), -Math.PI/2);
+		  this.world.add(wall4);
+		}
+
+        function resizePlaneBox() {
+
+
+            var planeGeometry = new THREE.PlaneGeometry( planeThreeWidth, planeThreeHeight, 300 );
+            planeMesh.geometry = planeGeometry;
+
+            ceil.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
+            ceil.position.set(0, FLOOR_PITCH, 0);
+            wall1.position.set((planeThreeWidth / 2) * PLANE_SIZE_CORRECTION, 0, 0);
+            wall2.position.set((-planeThreeWidth / 2)  * PLANE_SIZE_CORRECTION, 0, 0);
+            wall3.position.set(0, 0, (planeThreeHeight / 2)  * PLANE_SIZE_CORRECTION);
+            wall4.position.set(0, 0, (-planeThreeHeight / 2)  * PLANE_SIZE_CORRECTION);
+        }
+
+        function createDices() {
+			var die1 = new DiceD6Points({size: DIE_SIZE, backColor: "#aed46a", fontColor: '#000000'});
+			scene.add(die1.getObject());
+			dices.push(die1);
+
+            var die2 = new DiceD6Points({size: DIE_SIZE, backColor: "#f6d258", fontColor: '#000000'});
+            scene.add(die2.getObject());
+            dices.push(die2);
+		}
+
+		function init()
+		{
+		  document.addEventListener( 'mousedown', onMouseDown, false );
+			document.addEventListener( 'touchstart', onTouchStart, false );
+
+		  initThree();
+		  initCannon();
+		  initGyro();
+
+		  calculatePlaneSizeThreeValues();
+		  createPlaneBox();
+		  createDices();
+
+		  requestAnimationFrame( animate );
+		}
+
+		function initGyro() {
+		  gyro = new GyroNorm();
+		  gyro.init().then(function() {
+		    var isAvailable = gyro.isAvailable();
+
+		    if(!isAvailable.deviceOrientationAvailable) {
+		      console.log({message:'Device orientation is not available.'});
+		    }
+
+		    if(!isAvailable.accelerationAvailable) {
+		      console.log({message:'Device acceleration is not available.'});
+		    }
+
+		    if(!isAvailable.accelerationIncludingGravityAvailable) {
+		      console.log({message:'Device acceleration incl. gravity is not available.'});
+		    }
+
+		    if(!isAvailable.rotationRateAvailable) {
+		      console.log({message:'Device rotation rate is not available.'});
+		    }
+
+		    startGyro();
+		  }).catch(function(e){
+
+		    console.log(e);
+
+		  });
+		}
+
+		function animate(time)
+		{
+		  updatePhysics();
+			render();
+			update();
+
+		  requestAnimationFrame( animate );
+
+		  TWEEN.update(time)
+		}
+
+		function updatePhysics() {
+		  world.step(1.0 / 60.0);
+
+		  for (var i in dices) {
+		      if(!isDragged){
+		        dices[i].updateMeshFromBody();
+		      }
+		  }
+		}
+
+		var MIN_DICE_VELOCITY = 0.01;
+
+		function update()
+		{
+		    if(controls) controls.update()
+
+		    if(isDragged) {
+		      dragDices();
+		    }
+
+				if(throwType != ThrowType.NONE) {
+                    var dicesVelocity = getDicesVelocity();
+
+					if(dicesVelocity < MIN_DICE_VELOCITY){
+						throwType = ThrowType.NONE;
+						onThrowComplete();
+					}
+				}
+		}
+
+		function onThrowComplete() {
+			$("#t")[0].rows[0].cells[0].innerHTML  = ""+dice1ThrowValue;
+			$("#t")[0].rows[0].cells[1].innerHTML  = ""+dice2ThrowValue;
+		}
+
+		// drag variables
+		var dice1StartDistance = 0;
+		var dice2StartDistance = 0;
+		var isDragged = false;
+		var dicesPreviousPosition = {x: 0, y:0};
+		var DISTANCE_OVER_PLANE_DICE1 = 10;
+		var DISTANCE_OVER_PLANE_DICE2 = 12; // расстояние кубиков до пола
+		var DISTANCE_BETWEEN_DICES = 2;
+		var ROTATION_RADIANS_SPEED = 0.02;
+
+		function dragDicesStart() {
+		  isDragged = true;
+
+		  var dice1 = dices[0].getObject();
+		  var dice2 = dices[1].getObject();
+
+		  dicesPreviousPosition = {x1: dice1.position.x, y1: dice1.position.z, x2: dice2.position.x, y2: dice2.position.z};
+
+		  var xThree = ((mouseX/ SCREEN_WIDTH) * planeThreeWidth) - planeThreeWidth / 2;
+		  var yThree = ((mouseY / SCREEN_HEIGHT) * planeThreeHeight) - planeThreeHeight / 2;
+
+		  var dice1Pos = new THREE.Vector3(xThree - DISTANCE_BETWEEN_DICES, DISTANCE_OVER_PLANE_DICE1, yThree)
+		  var dice2Pos = new THREE.Vector3(xThree + DISTANCE_BETWEEN_DICES, DISTANCE_OVER_PLANE_DICE2, yThree)
+
+		  dice1StartDistance = dice1.position.distanceTo(dice1Pos);
+		  dice2StartDistance = dice2.position.distanceTo(dice2Pos);
+		}
+
+		function dragDices() {
+		  var dice1 = dices[0].getObject();
+		  var dice2 = dices[1].getObject();
+		  var DISTANCE_BETWEEN_DICES = 2;
+		  var DISTANCE_OVER_PLANE = 10; // расстояние кубиков до пола
+
+		  var xThree = ((mouseX/ SCREEN_WIDTH) * planeThreeWidth) - planeThreeWidth / 2;
+		  var yThree = ((mouseY / SCREEN_HEIGHT) * planeThreeHeight) - planeThreeHeight / 2;
+
+		  var dice1Pos = new THREE.Vector3(xThree - DISTANCE_BETWEEN_DICES, DISTANCE_OVER_PLANE_DICE1, yThree)
+		  var dice2Pos = new THREE.Vector3(xThree + DISTANCE_BETWEEN_DICES, DISTANCE_OVER_PLANE_DICE2, yThree)
+
+		  var distance1 = dice1.position.distanceTo(dice1Pos);
+		  var distance2 = dice2.position.distanceTo(dice2Pos);
+
+		  var distance1Factor = easeOutQuad(distance1 / dice1StartDistance);
+		  var distance2Factor = easeOutQuad(distance2 / dice2StartDistance);
+
+		  var dir = new THREE.Vector3(); // create once an reuse it
+		  var moveVector1 = dir.subVectors( dice1Pos, dice1.position ).normalize();
+
+		  var dir = new THREE.Vector3(); // create once an reuse it
+		  var moveVector2 = dir.subVectors( dice2Pos, dice2.position ).normalize();
+
+		  dice1.position.x += moveVector1.x * distance1Factor;
+		  dice1.position.y += moveVector1.y * distance1Factor;
+		  dice1.position.z += moveVector1.z * distance1Factor;
+		  dice1.rotation.x += ROTATION_RADIANS_SPEED;
+
+		  dice2.position.x += moveVector2.x * distance2Factor;
+		  dice2.position.y += moveVector2.y * distance2Factor;
+		  dice2.position.z += moveVector2.z * distance2Factor;
+		  dice2.rotation.y += ROTATION_RADIANS_SPEED;
+
+		  diceVelocities.x1 = dicesPreviousPosition.x1 - dice1.position.x;
+		  diceVelocities.y1 = dicesPreviousPosition.y1 - dice1.position.z;
+		  diceVelocities.x2 = dicesPreviousPosition.x2 - dice2.position.x;
+		  diceVelocities.y2 = dicesPreviousPosition.y2 - dice2.position.z;
+
+		  dicesPreviousPosition.x1 = dice1.position.x;
+		  dicesPreviousPosition.y1 = dice1.position.z;
+		  dicesPreviousPosition.x2 = dice2.position.x;
+		  dicesPreviousPosition.y2 = dice2.position.z;
+		}
+
+		// function easeOutQuad(t) { return t*(2-t) }
+		// function easeOutQuad(t) { return (--t)*t*t+1 }
+		// function easeOutQuad(t) { return 1-(--t)*t*t*t }
+		function easeOutQuad(t) { return 1+(--t)*t*t*t*t }
+
+		function dragDicesStop() {
+			  isDragged = false;
+		}
+
+		var THROW_MOUSE_VALIDATION_VELOCITY = 100;
+		var MAX_THROW_VELOCITY = 150;
+		var THROW_MOUSE_VELOCITY_MULTIPLIER = 200;
+
+		function throwDiceRandom() {
+			throwType = ThrowType.SYSTEM;
+
+			for (var i = 0; i < dices.length; i++) {
+                	var yRand = Math.random() * 15
+					dices[i].getObject().position.x = 1 - (i % 3) * 1.5;
+					dices[i].getObject().position.y = 10 + Math.floor(i / 3) * 1.5;
+					dices[i].getObject().position.z = planeThreeHeight / 3 + (i % 3) * 1.5;
+					dices[i].getObject().quaternion.x = (Math.random()*90-45) * Math.PI / 180;
+					dices[i].getObject().quaternion.z = (Math.random()*90-45) * Math.PI / 180;
+					dices[i].updateBodyFromMesh();
+                	var rand = Math.random() * 5;
+					dices[i].getObject().body.velocity.set(40 + rand, 40 + yRand, 40 + rand);
+					dices[i].getObject().body.angularVelocity.set(20 * Math.random() -10, 20 * Math.random() -10, 20 * Math.random() -10);
+			}
+
+            setThrowResult(dice1ThrowValue, dice2ThrowValue);
+		}
+
+		function throwDicesMouse() {
+		  throwType = ThrowType.MOUSE;
+
+		  var dice1 = dices[0];
+		  var dice2 = dices[1];
+
+		  var xVel = ((diceVelocities.x1 + diceVelocities.x2) / 2) * THROW_MOUSE_VELOCITY_MULTIPLIER;
+		  var yVel = ((diceVelocities.y1 + diceVelocities.y2) / 2) * THROW_MOUSE_VELOCITY_MULTIPLIER;
+		  var velocity = Math.abs(xVel) + Math.abs(yVel);
+
+		  //console.log("velocity : "+velocity);
+
+		  dice1.getObject().body.velocity.x = 0;
+		  dice1.getObject().body.velocity.z = 0;
+		  dice1.getObject().body.velocity.y = 0;
+
+		  dice2.getObject().body.velocity.x = 0;
+		  dice2.getObject().body.velocity.z = 0;
+		  dice2.getObject().body.velocity.y = 0;
+
+		  if(xVel < 0 && xVel < -MAX_THROW_VELOCITY) xVel = -MAX_THROW_VELOCITY;
+		  if(xVel > 0 && xVel > MAX_THROW_VELOCITY) xVel = MAX_THROW_VELOCITY;
+
+		  if(yVel < 0 && yVel < -MAX_THROW_VELOCITY) yVel = -MAX_THROW_VELOCITY;
+		  if(yVel > 0 && yVel > MAX_THROW_VELOCITY) yVel = MAX_THROW_VELOCITY;
+
+		  dice1.updateBodyFromMesh();
+		  dice2.updateBodyFromMesh();
+
+		  dice1.getObject().body.velocity.x -= diceVelocities.x1 * THROW_MOUSE_VELOCITY_MULTIPLIER;
+		  dice1.getObject().body.velocity.z -= diceVelocities.y1 * THROW_MOUSE_VELOCITY_MULTIPLIER;
+
+		  dice2.getObject().body.velocity.x -= diceVelocities.x2 * THROW_MOUSE_VELOCITY_MULTIPLIER;
+		  dice2.getObject().body.velocity.z -= diceVelocities.y2 * THROW_MOUSE_VELOCITY_MULTIPLIER;
+
+		  document.removeEventListener( 'mousemove', onMouseMove, false );
+		  document.removeEventListener( 'mouseup', onMouseUp, false );
+			document.addEventListener( 'touchend', onTouchEnd, false );
+			document.addEventListener( 'touchmove', onTouchMove, false );
+
+		  if(velocity > THROW_MOUSE_VALIDATION_VELOCITY){
+				setThrowResult(dice1ThrowValue, dice2ThrowValue);
+		  }else{
+		    showFalseThrowMessage();
+		    DiceManager.prepareValues([]);
+		  }
+		}
+
+		function render()
+		{
+			renderer.render( scene, camera );
+		}
+
+		function stopGyro() {
+		  gyro.stop();
+		}
+
+		function startGyro() {
+		  gyro.start(gyroCallBack);
+		}
+
+		function setThrowResult(value1, value2) {
+            console.log("setThrowResult : " + value1 + " | 2 : " + value2);
+			var diceValues = [];
+ 			diceValues[0] = {dice: dices[0], value: value1};
+			diceValues[1] = {dice: dices[1], value: value2};
+
+			DiceManager.prepareValues(diceValues);
+		}
+
+		// var GYRO_VELOCITY_WHICH_CAN_AFFECT_GYRO_THROW = 16;
+		// var DICES_VELOCITY_WHEN_GYRO_THROW_CAN_ACTIVATE = 100;
+		var GYRO_VELOCITY_WHICH_CAN_AFFECT_GYRO_THROW = 5;
+		var DICES_VELOCITY_WHEN_GYRO_THROW_CAN_ACTIVATE = 50;
+		var GYRO_MAX_VELOCITY = 22;
+		var GYRO_FORCE_FACTOR = 2.5;
+		var CALCULATE_AVERAGE_GYRO_VELOCITY_UPDATE_MS = 50;
+		var MIN_VELOCITY_TO_LISTEN_GYRO = 4;
+		var calculateAverageGyroVelocityId;
+		var gyroAverageVelocity = 0;
+		var gyroObject = {};
+		function gyroCallBack(data) {
+			gyroObject = data;
+
+			var xGyro = gyroObject.dm.x;
+			var yGyro = gyroObject.dm.y;
+			var zGyro = Math.abs(gyroObject.dm.z) * 1.3;
+            var gyroVelocity = Math.abs(xGyro) + Math.abs(yGyro) + Math.abs(zGyro);
+            var dicesVelocity = getDicesVelocity();
+			if(dicesVelocity > DICES_VELOCITY_WHEN_GYRO_THROW_CAN_ACTIVATE && gyroVelocity > GYRO_VELOCITY_WHICH_CAN_AFFECT_GYRO_THROW && throwType == ThrowType.SYSTEM){ //если начальная скорость кубиков достаточная и сильно тряхнули и бросок - системный, то начать слушать акселерометр
+				throwType = ThrowType.GYRO;
+				isGyroListening = true;
+
+			  	if(gyroVelocity > GYRO_MAX_VELOCITY) gyroVelocity = GYRO_MAX_VELOCITY;
+
+				console.log("START LISTEN GYRO");
+
+				resetGyroAverage();
+				calculateAverageGyroVelocity();
+				calculateAverageGyroVelocityId = setInterval(calculateAverageGyroVelocity, CALCULATE_AVERAGE_GYRO_VELOCITY_UPDATE_MS); //слушать до тех пор пока, устройство достаточно сильно тресется
+			}
+
+			if(isGyroListening){
+				if(gyroAverageVelocity > MIN_VELOCITY_TO_LISTEN_GYRO) {
+					console.log("LISTEN GYRO : "+gyroAverageVelocity);
+					for (var i in dices) {
+						dices[i].getObject().body.velocity.x += xGyro * GYRO_FORCE_FACTOR;
+                        dices[i].getObject().body.velocity.z += yGyro * GYRO_FORCE_FACTOR * -1;
+                        dices[i].getObject().body.velocity.y += zGyro * GYRO_FORCE_FACTOR + gyroVelocity / 4; // добавить силы "вверх" чтобы кубики прыгали
+				  }
+				}else{ //Если тряска ослабла, то перестать слушать акселерометр, воздействовать на кубики и выставить необходимые значения
+					console.log("FINISH LISTEN GYRO");
+					isGyroListening = false;
+					clearInterval(calculateAverageGyroVelocityId);
+					setThrowResult(dice1ThrowValue, dice2ThrowValue);
+				}
+			}
+		}
+
+		function getDicesVelocity() {
+            var returnValue = 0;
+			for (var i in dices) {
+				returnValue += Math.abs(dices[i].getObject().body.velocity.x);
+				returnValue += Math.abs(dices[i].getObject().body.velocity.y);
+				returnValue += Math.abs(dices[i].getObject().body.velocity.z);
+			}
+
+			return returnValue;
+		}
+
+		var gyroAverageValues = [];
+		var AVERAGE_FACTOR = 5;
+		function resetGyroAverage() {
+			gyroAverageValues = [];
+			gyroAverageVelocity = 0;
+		}
+		function calculateAverageGyroVelocity() {
+			var xGyro = gyroObject.dm.x;
+			var yGyro = gyroObject.dm.y;
+			var zGyro = Math.abs(gyroObject.dm.z) * 1.3;
+
+            var gyroVelocity = Math.abs(xGyro) + Math.abs(yGyro) + Math.abs(zGyro);
+
+			gyroAverageValues.push(gyroVelocity);
+
+			if(gyroAverageValues.length > AVERAGE_FACTOR) gyroAverageValues.shift();
+
+			for(var i in gyroAverageValues){
+				gyroAverageVelocity += gyroAverageValues[i];
+			}
+
+			gyroAverageVelocity /= gyroAverageValues.length;
+		}
+	</script>
+
+</body>
+</html>

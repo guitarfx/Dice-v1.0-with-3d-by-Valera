@@ -12,17 +12,24 @@ class DiceManagerClass {
         this.floorBodyMaterial = new CANNON.Material();
         this.barrierBodyMaterial = new CANNON.Material();
 
+        // world.addContactMaterial(
+        //     new CANNON.ContactMaterial(this.floorBodyMaterial,   this.diceBodyMaterial, {friction: 0.01, restitution: 0.5})
+        // );
+        // world.addContactMaterial(
+        //     new CANNON.ContactMaterial(this.barrierBodyMaterial, this.diceBodyMaterial, {friction: 0, restitution: 1.0})
+        // );
+        // world.addContactMaterial(
+        //     new CANNON.ContactMaterial(this.diceBodyMaterial,    this.diceBodyMaterial, {friction: 0, restitution: 0.5})
+        // );
+
         world.addContactMaterial(
-            new CANNON.ContactMaterial(this.floorBodyMaterial,   this.diceBodyMaterial, {friction: 0.01, restitution: 0.5})
-            //new CANNON.ContactMaterial(this.floorBodyMaterial,   this.diceBodyMaterial, {friction: 0.01, restitution: 0.01})
+            new CANNON.ContactMaterial(this.floorBodyMaterial,   this.diceBodyMaterial, {friction: 0.01, restitution: 0.2})
         );
         world.addContactMaterial(
-            new CANNON.ContactMaterial(this.barrierBodyMaterial, this.diceBodyMaterial, {friction: 0, restitution: 1.0})
-            //new CANNON.ContactMaterial(this.barrierBodyMaterial, this.diceBodyMaterial, {friction: 0.01, restitution: 0.01})
+            new CANNON.ContactMaterial(this.barrierBodyMaterial, this.diceBodyMaterial, {friction: 0, restitution: 0.35})
         );
         world.addContactMaterial(
-            new CANNON.ContactMaterial(this.diceBodyMaterial,    this.diceBodyMaterial, {friction: 0, restitution: 0.5})
-            //new CANNON.ContactMaterial(this.diceBodyMaterial,    this.diceBodyMaterial, {friction: 0.01, restitution: 0.01})
+            new CANNON.ContactMaterial(this.diceBodyMaterial,    this.diceBodyMaterial, {friction: 0, restitution: 0.1})
         );
     }
 
@@ -355,7 +362,8 @@ class DiceObject {
                 texture = this.createTextTexture(this.faceTexts[i], this.labelColor, this.diceColor);
             }
 
-            materials.push(new THREE.MeshPhongMaterial(Object.assign({}, this.materialOptions, {map: texture})));
+            // materials.push(new THREE.MeshPhongMaterial(Object.assign({}, this.materialOptions, {map: texture})));
+            materials.push(new THREE.MeshStandardMaterial(Object.assign({}, this.materialOptions, {map: texture})));
         }
         return materials;
     }
@@ -368,7 +376,7 @@ class DiceObject {
         if (!DiceManager.world) throw new Error('You must call DiceManager.setWorld(world) first.');
         this.object = new THREE.Mesh(this.getGeometry(), new THREE.MultiMaterial(this.getMaterials()));
 
-        this.object.reveiceShadow = true;
+        //this.object.receiveShadow = true;
         this.object.castShadow = true;
         this.object.diceObject = this;
         this.object.body = new CANNON.Body({
@@ -477,6 +485,7 @@ class DiceD6Points extends DiceObject {
         this.faceTexts = [' ', '0', '1', '2', '3', '4', '5', '6'];
         this.textMargin = 1.0;
         this.pointRadius = 16;
+        this.pointColor = "#FFFFFF";
         this.pointPad = 80;
         this.mass = 300;
         this.inertia = 13;
@@ -485,119 +494,126 @@ class DiceD6Points extends DiceObject {
             let context = canvas.getContext("2d");
             let ts = this.calculateTextureSize(this.size / 2 + this.size * this.textMargin) * 2;
             canvas.width = canvas.height = ts;
+
+            this.pointColor = color;
+
+            context.fillStyle = backColor;
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
             if(text == "1"){
-              context.beginPath();
-              context.arc(ts / 2, ts / 2, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
-              context.fill();
+                context.beginPath();
+                context.arc(ts / 2, ts / 2, this.pointRadius, 0, 2 * Math.PI, false);
+                context.fillStyle = this.pointColor;
+                context.fill();
             }
+            // return
             if(text == "2"){
               context.beginPath();
               context.arc(this.pointPad, this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(ts - this.pointPad, ts - this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
             }
 
             if(text == "3"){
               context.beginPath();
               context.arc(this.pointPad, this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(ts / 2, ts / 2, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(ts - this.pointPad, ts - this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
             }
 
             if(text == "4"){
               context.beginPath();
               context.arc(this.pointPad, this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(ts - this.pointPad, this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(ts - this.pointPad, ts - this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(this.pointPad, ts - this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
             }
 
             if(text == "5"){
               context.beginPath();
               context.arc(this.pointPad, this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(ts - this.pointPad, this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(ts - this.pointPad, ts - this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(this.pointPad, ts - this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(ts / 2, ts / 2, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
             }
 
             if(text == "6"){
               context.beginPath();
               context.arc(this.pointPad, this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(ts - this.pointPad, this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(ts - this.pointPad, ts - this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(this.pointPad, ts - this.pointPad, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(this.pointPad, ts / 2, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
 
               context.beginPath();
               context.arc(ts - this.pointPad, ts / 2, this.pointRadius, 0, 2 * Math.PI, false);
-              context.fillStyle = '#FFFFFF';
+              context.fillStyle = this.pointColor;
               context.fill();
             }
 
